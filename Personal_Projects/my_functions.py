@@ -83,8 +83,7 @@ def CzPlot(n):
     plt.show()
 
 
+    
+    
 
-    
-    
-print(Gblist(66))
 
