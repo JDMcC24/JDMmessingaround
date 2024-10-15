@@ -5,22 +5,11 @@ import sympy as sp
 from my_functions import *
 
 
-def CzPlot(n):
-    xs = []
-    ys = []
-    
-    for i in range(2,n,1):
-        xs.append(i)
-        ys.append(Czlist(i)[1])
-    plt.scatter(xs,ys,s=5)
-    plt.xlabel("Number")
-    plt.ylabel("Number of Steps Until 1")
-    plt.title( "Collatz Sequences" )
-    plt.show()
 
 
 
-e = np.array([[29.21,25.72, 26.83, 33.33, 8.26, 20.69, 33.33, 6.28, 27 ],[43,38, 40, 50, 24,30, 50, 18, 40]])
+
+e = np.array([[29.21,25.72, 26.83, 33.33, 8.26, 20.69, 33.33, 6.28, 18,30 ],[43,38, 40, 50, 24,30, 50, 18, 27,46]])
 # print( np.sum(e, axis=1))
 # print(prime_list(10))
 
