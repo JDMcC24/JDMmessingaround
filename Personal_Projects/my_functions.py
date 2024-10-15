@@ -41,14 +41,15 @@ def Gblist(n):
 
     if n <= 1:
         return print('GBlist Error: Input must be a positive interger larger than 1.')
-    glist = np.array([[],[]])
+    glist = []
     num = 0
     for i in prime_list(n):
         if is_prime(n-i) == True:
-            pair = np.array([[i],[n-i]])
-            glist = np.append(glist,pair,axis=1)
+            pair = (i,n-i)
+            glist.append(pair)
             num+= 1
-    return glist, num
+    glist.append(str(num)+ " total pairs" )
+    return glist
 
 def Czlist(n):
     #Input: Integer greater than 1
@@ -85,7 +86,5 @@ def CzPlot(n):
 
     
     
-
-
-
 print(Gblist(66))
+
