@@ -43,7 +43,7 @@ def draw(win, paddles, ball, left_score, right_score):
     pg.display.update()
 
 class Ball:
-    Max_Vel = 5
+    Max_Vel = 10
     Color = WHITE
     def __init__ (self, x,y, radius):
         self.x = self.original_x =  x

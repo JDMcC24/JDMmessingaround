@@ -82,7 +82,70 @@ def CzPlot(n):
     plt.title( "Collatz Sequences" )
     plt.show()
 
+""" Magic Square Functions"""
 
+def generate_magic_square(n):
+    # Magic square generation only works for odd n, 4x4 and 6x6 have specific methods
+    if n % 2 == 1:
+        return odd_order_magic_square(n)
+    elif n % 4 == 0:
+        return doubly_even_order_magic_square(n)
+    else:
+        return singly_even_order_magic_square(n)
+
+def odd_order_magic_square(n):
+    # Siamese method for odd n
+    magic_square = np.zeros((n, n), dtype=int)
+    
+    i, j = 0, n // 2
+    for num in range(1, n*n + 1):
+        magic_square[i, j] = num
+        new_i, new_j = (i-1) % n, (j+1) % n
+        if magic_square[new_i, new_j]:
+            i += 1
+        else:
+            i, j = new_i, new_j
+            
+    return magic_square
+
+def doubly_even_order_magic_square(n):
+    # Algorithm for doubly even n (n = 4, 8, 12, etc.)
+    magic_square = np.arange(1, n*n+1).reshape(n, n)
+    
+    # Invert certain parts
+    for i in range(n):
+        for j in range(n):
+            if (i % 4 == j % 4) or (i % 4 + j % 4 == 3):
+                magic_square[i, j] = n*n + 1 - magic_square[i, j]
+                
+    return magic_square
+
+def singly_even_order_magic_square(n):
+    # Algorithm for singly even n (n = 6, 10, etc.)
+    half_n = n // 2
+    sub_square = odd_order_magic_square(half_n)
+    magic_square = np.zeros((n, n), dtype=int)
+    
+    # Build blocks
+    for i in range(half_n):
+        for j in range(half_n):
+            magic_square[i, j] = sub_square[i, j]
+            magic_square[i + half_n, j] = sub_square[i, j] + 2 * half_n**2
+            magic_square[i, j + half_n] = sub_square[i, j] + 3 * half_n**2
+            magic_square[i + half_n, j + half_n] = sub_square[i, j] + half_n**2
+    
+    # Special swapping rules
+    if n > 2:
+        k = (n - 2) // 4
+        for i in range(half_n):
+            for j in range(k):
+                magic_square[i, j], magic_square[i + half_n, j] = magic_square[i + half_n, j], magic_square[i, j]
+        for i in range(half_n):
+            for j in range(n - k, n):
+                magic_square[i, j], magic_square[i + half_n, j] = magic_square[i + half_n, j], magic_square[i, j]
+        magic_square[[0, half_n], [0, k]] = magic_square[[half_n, 0], [0, k]]
+    
+    return magic_square
     
     
 
