@@ -5,6 +5,29 @@ from matplotlib import pyplot as plt
 
 
 
+
+""" Linear Algebra"""
+
+M = np.random.randint(0,10, (4,5))
+B = np.array([[1,2,3,4],[5,6,7,8]])
+
+def LU(A):
+    #Input: and n x m Matrix, A, as an array
+    #Outputs L,U: L an n x n lower triangular matrix, 
+    # U an n x m  upper triangular matrix so that L U = A
+    n,m = A.shape
+    L = A
+    U = np.zeros((m,m))
+    for k in range(m):
+        target = max(L[:,k])
+        i = np.where(L[:,k] == target)
+        print(i)
+  
+
+    return L
+
+print(B, np.where(B == 1))  
+
 def spradius(A):
     #Input: n x n Matrix, A, as an array
     #Output: spectral radius of A
