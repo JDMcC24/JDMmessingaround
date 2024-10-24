@@ -2,31 +2,12 @@ import math
 import numpy as np
 from matplotlib import pyplot as plt
 
-
-
-
-
-""" Linear Algebra"""
-
-M = np.random.randint(0,10, (4,5))
-B = np.array([[1,2,3,4],[5,6,7,8]])
-
-def LU(A):
-    #Input: and n x m Matrix, A, as an array
-    #Outputs L,U: L an n x n lower triangular matrix, 
-    # U an n x m  upper triangular matrix so that L U = A
-    n,m = A.shape
-    L = A
-    U = np.zeros((m,m))
-    for k in range(m):
-        target = max(L[:,k])
-        i = np.where(L[:,k] == target)
-        print(i)
-  
-
-    return L
-
-print(B, np.where(B == 1))  
+def prod(n):
+    #Mulitples elemenst of a list
+    product = 1
+    for i in n:
+        product *= i
+    return product
 
 def spradius(A):
     #Input: n x n Matrix, A, as an array
@@ -45,6 +26,13 @@ def is_prime(n):
         if n % (i) == 0:
             return False
     return True
+
+def next_prime(a):
+    #Returns the smallest prime number larger than a
+    i = 1
+    while is_prime(a+i) == False:
+        i+=1
+    return a+i
 
 def prime_list(n):
     #Returns all prime numbers less than or equal to n
@@ -171,5 +159,6 @@ def singly_even_order_magic_square(n):
     return magic_square
     
     
-
-
+def is_palindrome(num):
+    num_str = str(num)
+    return num_str == num_str[::-1]

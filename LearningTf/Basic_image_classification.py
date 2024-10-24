@@ -52,7 +52,8 @@ model.fit(train_images, train_labels, epochs=10)
 test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
 
 # Test accuracy is attrocious. Is there are an error somewhere? This is so bad, I doubt it 
-# is just overfitting... Try copying the code samples on TF and compare?
+# is just overfitting, Looks more like it guesses are completely random. Maybe a mistake with splitting 
+# the data? Try copying the code samples on TF and compare?
 
 print('\nTest accuracy:', test_acc)
 
