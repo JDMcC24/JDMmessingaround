@@ -3,8 +3,50 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+def triangle_number(n):
+    #Finds the next triangle number greater than n
+    i=1
+    tri = 1
+    while tri <= n:
+        i+=1
+        tri = sum(range(i))
 
+    return(tri)
 
+def triangle_number_list(n):
+    #Generates a list of all triangle numbers less than or equal to n
+    tri_list = [1]
+    i =1
+    while tri_list[-1] < n:
+        i+=1
+        tri_list.append(tri_list[-1] + i)
+    if tri_list[-1] > n:
+        tri_list.remove(tri_list[-1])
+    return tri_list
+
+def number_of_divisors(n):
+    #Finds the number of divisors of n
+    num = 0
+    for i in range(1,math.floor(math.sqrt(n))+1):
+        if n%i == 0:
+            num+=2
+    return num
+
+def list__divisors(n):
+    #returns a list of the divisors of n
+    divisors = []
+    for i in range(1,math.ceil(n / 2)+1):
+        if n % i == 0:
+            divisors.append(i)
+    divisors.append(n)
+    return divisors
+
+def prod(n):
+    #Mulitples elemenst of a list
+    product = 1
+    for i in n:
+        product *= i
+    return product
 
 
 

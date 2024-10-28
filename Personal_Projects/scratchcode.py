@@ -30,4 +30,9 @@ print(110/15)
 x,y = sp.symbols('x y')
 
 #plot3d(1- x**2 - y**2, (x,-1,1), (y,-1,1) )
-print(generate_magic_square(3))
+
+
+e = [47.2, 48.16, 45.21, 31.24, 47.51, 46.94, 44.52, 51.65, 42.72]
+b = [75, 75]
+
+print(sum(e) + sum(b))
