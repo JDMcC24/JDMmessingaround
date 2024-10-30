@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas
 import sympy as sp
 from sympy.plotting import plot3d
 from my_functions import *
@@ -26,8 +25,8 @@ from my_functions import *
 # eq = sp.Eq( x/15, (x-.25)/5)
 # print(sp.solveset(eq))
     
-print(110/15)
-x,y = sp.symbols('x y')
+#print(110/15)
 
-#plot3d(1- x**2 - y**2, (x,-1,1), (y,-1,1) )
-print(generate_magic_square(3))
+#plot3d(1- x**2 + y**2, (x,-1,1), (y,-1,1) )
+e = [37.80, 43.5, 38.83,41.31, 48.40, 47.59, 53.55, 53.78]
+print(sum(e) + 180+150)
