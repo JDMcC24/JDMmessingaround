@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas
 import sympy as sp
+from sympy.plotting import plot
 from sympy.plotting import plot3d
 from my_functions import *
 
@@ -36,3 +37,31 @@ e = [47.2, 48.16, 45.21, 31.24, 47.51, 46.94, 44.52, 51.65, 42.72]
 b = [75, 75]
 
 print(sum(e) + sum(b))
+
+# plot(sp.diff( x**2 * sp.sin(x), x, 5))
+# plt.show()
+
+# eq = sp.Eq( x**4 - 10 * x**2 + 9, 0)
+
+
+# f = 0
+# for i in range(0,11):
+#     print((1+1j)**i)
+
+# eq2 = sp.Eq(x**2 + y**2,1)
+# sp.plotting.plot_implicit(eq2)
+# plt.show()
+
+print(sp.solveset(sp.Eq(x**2 - 1000*x + 1000, 0 )))
+
+def factor_list(n):
+    fl = []
+    for i in range(1,math.ceil(n/2)+1):
+        if n%i == 0 :
+            fl.append(i)
+    if n >1:
+        fl.append(n)
+    return fl
+
+for i in range(1,12):
+    print([i, sum(factor_list(i))])

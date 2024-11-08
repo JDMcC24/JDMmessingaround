@@ -12,15 +12,4 @@ evens = []
 for i in fib:
     if i % 2 == 0:
         evens.append(i)
-#print(sum(evens))
-
-"""Notice that only every third number is even (This is not hard to prove)"""
-
-# evens2 = []
-
-# n = 2
-# while fib[n] < 4000000:
-#     evens2.append(fib[n])
-#     n+=3
-
-print(fib)
+print(sum(evens))
