@@ -63,5 +63,12 @@ def factor_list(n):
         fl.append(n)
     return fl
 
-for i in range(1,12):
-    print([i, sum(factor_list(i))])
+# for i in range(1,12):
+#     print([i, sum(factor_list(i))])
+
+n=1
+for i in range(3):
+    print(n**3 +15)
+    n+=1
+
+
