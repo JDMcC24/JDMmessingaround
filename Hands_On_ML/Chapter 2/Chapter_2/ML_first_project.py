@@ -320,8 +320,50 @@ param_grid = [
      'random_forest__max_features': [6, 8, 10]},]
 grid_search = GridSearchCV(full_pipeline, param_grid, cv=3,
                            scoring='neg_root_mean_squared_error')
-grid_search.fit(housing, housing_labels)
-print(grid_search.best_params_)
-cv_res = pd.DataFrame(grid_search.cv_results_)
-cv_res.sort_values( by = "mean_test_score", ascending= False, inplace= True)
-print(cv_res.head())
+# grid_search.fit(housing, housing_labels)
+# print(grid_search.best_params_)
+# cv_res = pd.DataFrame(grid_search.cv_results_)
+# cv_res.sort_values( by = "mean_test_score", ascending= False, inplace= True)
+# print(cv_res.head())
+
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+
+param_distribs = {"preprocessing__geo__n_clusters": randint(low = 3, high = 50),
+                  "random_forest__max_features": randint(low = 2, high=20)}
+rnd_search = RandomizedSearchCV(full_pipeline, param_distributions= param_distribs, n_iter= 10, cv = 3,
+                                scoring = "neg_root_mean_squared_error", random_state=42)
+rnd_search.fit(housing,housing_labels)
+
+final_model = rnd_search.best_estimator_
+feature_importances = final_model["random_forest"].feature_importances_
+print(feature_importances.round(2))
+sorted(zip(feature_importances, final_model["preprocessing"].get_feature_names_out()), reverse= True)
+
+X_test = strat_test_set.drop("median_house_value", axis= 1)
+y_test = strat_test_set["median_house_value"].copy()
+
+final_predictions = final_model.predict(X_test)
+final_rmse = mean_squared_error(y_test, final_predictions, squared= False)
+print(final_rmse)
+
+import joblib
+
+joblib.dump(final_model, "my_california_housing_model.pkl")
+
+import joblib
+
+
+from sklearn.cluster import KMeans
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.metrics.pairwise import rbf_kernel
+
+def column_ratio(X):
+    return X[:, [0]] / X[:, [1]]
+
+
+
+final_model_reloaded = joblib.load("my_california_housing_model.pkl")
+
+new_data = housing.iloc[:5]  # pretend these are new districts
+predictions = final_model_reloaded.predict(new_data)

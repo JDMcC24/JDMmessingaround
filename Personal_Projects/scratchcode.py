@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import sympy as sp
 from sympy.plotting import plot3d
 from my_functions import *
-
+import sklearn
 
 
 
@@ -28,5 +28,10 @@ from my_functions import *
 #print(110/15)
 
 #plot3d(1- x**2 + y**2, (x,-1,1), (y,-1,1) )
-e = [37.80, 43.5, 38.83,41.31, 48.40, 47.59, 53.55, 53.78]
-print(sum(e) + 180+150)
+print(math.factorial(10) / (math.factorial(2)**5)/(math.factorial(5)) )
+print(math.factorial(8) / (math.factorial(2)**4)/(math.factorial(4)) )
+
+x,y,z = sp.symbols(' x y z')
+
+print(8*4 + 8*4 + 4**2)
+

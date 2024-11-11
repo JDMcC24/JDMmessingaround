@@ -4,6 +4,26 @@ from matplotlib import pyplot as plt
 
 
 
+def prime_factors(n):
+    #Returns list of prime factors of n
+    if n <= 1:
+        return print("Error: prime_factors requires an integer greater than 1")
+    if type(n) != int:
+        return print("Error: prime_factors requires an integer greater than 1")
+
+    primes = []
+    while n > 1:
+        newprimes = []
+        for i in range(2, math.ceil(math.sqrt(n))+1):
+            if is_prime(i) == True and n%i ==0:
+                newprimes.append(i)
+        n = n / prod(newprimes)
+        primes = primes + newprimes
+        if is_prime(n)== True:
+            primes.append(int(n))
+            break
+        
+    return sorted(primes)
 
 
 
