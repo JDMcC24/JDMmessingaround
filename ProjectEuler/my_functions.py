@@ -2,6 +2,15 @@ import math
 import numpy as np
 from matplotlib import pyplot as plt
 
+def factor_list(n):
+    fl = []
+    for i in range(1,math.ceil(n/2)+1):
+        if n%i == 0 :
+            fl.append(i)
+    if n >1:
+        fl.append(n)
+    return fl
+
 
 def triangle_number(n):
     #Finds the next triangle number greater than n

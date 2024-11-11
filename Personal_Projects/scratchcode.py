@@ -1,11 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas
 import sympy as sp
 from sympy.plotting import plot
 from sympy.plotting import plot3d
 from my_functions import *
-
+import sklearn
 
 
 
@@ -27,48 +26,13 @@ from my_functions import *
 # eq = sp.Eq( x/15, (x-.25)/5)
 # print(sp.solveset(eq))
     
-print(110/15)
-x,y = sp.symbols('x y')
+#print(110/15)
 
-#plot3d(1- x**2 - y**2, (x,-1,1), (y,-1,1) )
+#plot3d(1- x**2 + y**2, (x,-1,1), (y,-1,1) )
+print(math.factorial(10) / (math.factorial(2)**5)/(math.factorial(5)) )
+print(math.factorial(8) / (math.factorial(2)**4)/(math.factorial(4)) )
 
+x,y,z = sp.symbols(' x y z')
 
-e = [47.2, 48.16, 45.21, 31.24, 47.51, 46.94, 44.52, 51.65, 42.72]
-b = [75, 75]
-
-print(sum(e) + sum(b))
-
-# plot(sp.diff( x**2 * sp.sin(x), x, 5))
-# plt.show()
-
-# eq = sp.Eq( x**4 - 10 * x**2 + 9, 0)
-
-
-# f = 0
-# for i in range(0,11):
-#     print((1+1j)**i)
-
-# eq2 = sp.Eq(x**2 + y**2,1)
-# sp.plotting.plot_implicit(eq2)
-# plt.show()
-
-print(sp.solveset(sp.Eq(x**2 - 1000*x + 1000, 0 )))
-
-def factor_list(n):
-    fl = []
-    for i in range(1,math.ceil(n/2)+1):
-        if n%i == 0 :
-            fl.append(i)
-    if n >1:
-        fl.append(n)
-    return fl
-
-# for i in range(1,12):
-#     print([i, sum(factor_list(i))])
-
-n=1
-for i in range(3):
-    print(n**3 +15)
-    n+=1
-
+print(8*4 + 8*4 + 4**2)
 
