@@ -36,3 +36,7 @@ x,y,z = sp.symbols(' x y z')
 
 print(8*4 + 8*4 + 4**2)
 
+def count_digits(n):
+    n_string = str(n)
+
+print(len("hello"))

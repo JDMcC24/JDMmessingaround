@@ -2,45 +2,6 @@ import math
 import numpy as np
 from matplotlib import pyplot as plt
 
-def triangle_number(n):
-    #Finds the next triangle number greater than n
-    i=1
-    tri = 1
-    while tri <= n:
-        i+=1
-        tri = sum(range(i))
-
-    return(tri)
-
-def triangle_number_list(n):
-    #Generates a list of all triangle numbers less than or equal to n
-    tri_list = [1]
-    i =1
-    while tri_list[-1] < n:
-        i+=1
-        tri_list.append(tri_list[-1] + i)
-    if tri_list[-1] > n:
-        tri_list.remove(tri_list[-1])
-    return tri_list
-
-def list__divisors(n):
-    #returns a list of the divisors of n
-    divisors = []
-    for i in range(1,math.ceil(n / 2)+1):
-        if n % i == 0:
-            divisors.append(i)
-    divisors.append(n)
-    return divisors
-
-def number_of_divisors(n):
-    #Finds the number of divisors of n
-    num = 0
-    for i in range(1,math.floor(math.sqrt(n))+1):
-        if n%i == 0:
-            num+=2
-    return num
-
-
 def prod(n):
     #Mulitples elemenst of a list
     product = 1
@@ -65,6 +26,28 @@ def is_prime(n):
         if n % (i) == 0:
             return False
     return True
+
+def prime_factors(n):
+    #Returns list of prime factors of n
+    if n <= 1:
+        return print("Error: prime_factors requires an integer greater than 1")
+    if type(n) != int:
+        return print("Error: prime_factors requires an integer greater than 1")
+
+    primes = []
+    while n > 1:
+        newprimes = []
+        for i in range(2, math.ceil(math.sqrt(n))+1):
+            if is_prime(i) == True and n%i ==0:
+                newprimes.append(i)
+        n = n / prod(newprimes)
+        primes = primes + newprimes
+        if is_prime(n)== True:
+            primes.append(int(n))
+            break
+        
+    return sorted(primes)
+
 
 def next_prime(a):
     #Returns the smallest prime number larger than a
@@ -201,3 +184,15 @@ def singly_even_order_magic_square(n):
 def is_palindrome(num):
     num_str = str(num)
     return num_str == num_str[::-1]
+
+def count_digits(n):
+    #Counts number of digits in n
+    n_string = str(n)
+    return len(n_string)
+
+def Fibonacci_list(n):
+    #creates a list of the first n > 2 Fibonacci numbers
+    F_list = [1, 1] 
+    while len(F_list) < n:
+        F_list.append( F_list[-1] + F_list[-2])
+    return F_list

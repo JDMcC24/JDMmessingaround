@@ -2,15 +2,6 @@ import math
 import numpy as np
 from matplotlib import pyplot as plt
 
-def factor_list(n):
-    fl = []
-    for i in range(1,math.ceil(n/2)+1):
-        if n%i == 0 :
-            fl.append(i)
-    if n >1:
-        fl.append(n)
-    return fl
-
 
 def triangle_number(n):
     #Finds the next triangle number greater than n
@@ -20,6 +11,26 @@ def triangle_number(n):
         i+=1
         tri = sum(range(i))
 
+def prime_factors(n):
+    #Returns list of prime factors of n
+    if n <= 1:
+        return print("Error: prime_factors requires an integer greater than 1")
+    if type(n) != int:
+        return print("Error: prime_factors requires an integer greater than 1")
+
+    primes = []
+    while n > 1:
+        newprimes = []
+        for i in range(2, math.ceil(math.sqrt(n))+1):
+            if is_prime(i) == True and n%i ==0:
+                newprimes.append(i)
+        n = n / prod(newprimes)
+        primes = primes + newprimes
+        if is_prime(n)== True:
+            primes.append(int(n))
+            break
+        
+    return sorted(primes)
     return(tri)
 
 def triangle_number_list(n):
@@ -127,7 +138,7 @@ def Czlist(n):
         elif n%2 == 1:
             n = 3*n+1
             steps.append(n)
-    num = len(steps)-1
+    num = len(steps)
     return steps, num
 
 def CzPlot(n):
@@ -217,5 +228,15 @@ def is_palindrome(num):
     return num_str == num_str[::-1]
 
 
+def count_digits(n):
+    #Counts number of digits in n
+    n_string = str(n)
+    return len(n_string)
 
+def Fibonacci_list(n):
+    #creates a list of the first n > 2 Fibonacci numbers
+    F_list = [1, 1] 
+    while len(F_list) < n:
+        F_list.append( F_list[-1] + F_list[-2])
+    return F_list
 
