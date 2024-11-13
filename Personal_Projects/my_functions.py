@@ -196,3 +196,43 @@ def Fibonacci_list(n):
     while len(F_list) < n:
         F_list.append( F_list[-1] + F_list[-2])
     return F_list
+
+def factor_list(n):
+    #lists all the factors of n less than n
+    f_list = [1]
+    for i in range(2, math.floor(math.sqrt(n))+1):
+        if n % i == 0:
+            f_list.append(i)
+            if n/i != i:
+                f_list.append(int(n/i))
+    return f_list
+
+
+
+def is_amicable(a,b):
+    a_factors = factor_list(a)
+    if sum(a_factors) == b:
+        b_factors = factor_list(b)
+        if sum(b_factors) == a:
+            return True
+        else:
+            return False
+    else:
+        return False
+    
+def is_abundant(n):
+    if sum(factor_list(n)) > n:
+        return True
+    else:
+        return False
+    
+
+
+def sum_of_abundants(n):
+    answr = False
+    for i in range(1,math.floor(n/2)+1):
+        if is_abundant(i):
+            if is_abundant(n-i):
+                answr = True
+                break
+    return answr

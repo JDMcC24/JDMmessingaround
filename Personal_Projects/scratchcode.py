@@ -4,7 +4,8 @@ import sympy as sp
 from sympy.plotting import plot
 from sympy.plotting import plot3d
 from my_functions import *
-import sklearn
+#import sklearn
+import time
 
 
 
@@ -29,14 +30,30 @@ import sklearn
 #print(110/15)
 
 #plot3d(1- x**2 + y**2, (x,-1,1), (y,-1,1) )
-print(math.factorial(10) / (math.factorial(2)**5)/(math.factorial(5)) )
-print(math.factorial(8) / (math.factorial(2)**4)/(math.factorial(4)) )
 
-x,y,z = sp.symbols(' x y z')
 
-print(8*4 + 8*4 + 4**2)
+#x,y,z = sp.symbols(' x y z')
+starttime = time.time()
 
-def count_digits(n):
-    n_string = str(n)
+def is_abundant(n):
+    if sum(factor_list(n)) > n:
+        return True
+    else:
+        return False
+    
 
-print(len("hello"))
+
+def sum_of_abundants(n):
+    answr = False
+    for i in range(1,n):
+        if is_abundant(i):
+            if is_abundant(n-i):
+                answr = True
+                nums = [i, n-i]
+    if answr == True:
+        return answr, nums
+    else:
+        return answr
+
+print(sum_of_abundants(24)[0])
+    
