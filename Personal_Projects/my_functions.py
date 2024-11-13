@@ -1,6 +1,7 @@
 import math
 import numpy as np
 from matplotlib import pyplot as plt
+import itertools
 
 def prod(n):
     #Mulitples elemenst of a list
@@ -236,3 +237,18 @@ def sum_of_abundants(n):
                 answr = True
                 break
     return answr
+
+
+def totient(n):
+    answr = 0
+    for i in range(1,n):
+        if math.gcd(n,i) == 1:
+            answr+=1
+    return answr
+
+def digit_permutations(num):
+    # Convert the number to a string to extract digits
+    digits = str(num)
+    permutations = set(int("".join(p)) for p in itertools.permutations(digits))
+    return sorted(permutations)
+
