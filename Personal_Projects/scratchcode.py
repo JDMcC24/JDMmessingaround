@@ -35,25 +35,11 @@ import time
 #x,y,z = sp.symbols(' x y z')
 starttime = time.time()
 
-def is_abundant(n):
-    if sum(factor_list(n)) > n:
-        return True
-    else:
-        return False
-    
-
-
-def sum_of_abundants(n):
-    answr = False
+def totient(n):
+    answr = 0
     for i in range(1,n):
-        if is_abundant(i):
-            if is_abundant(n-i):
-                answr = True
-                nums = [i, n-i]
-    if answr == True:
-        return answr, nums
-    else:
-        return answr
+        if math.gcd(n,i) == 1:
+            answr+=1
+    return answr
 
-print(sum_of_abundants(24)[0])
-    
+print(totient(5))

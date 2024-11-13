@@ -281,4 +281,9 @@ def sum_of_abundants(n):
     return answr
 
 
-
+def totient(n):
+    answr = 0
+    for i in range(1,n):
+        if math.gcd(n,i) == 1:
+            answr+=1
+    return answr
