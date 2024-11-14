@@ -244,7 +244,7 @@ def factor_list(n):
     #lists all the factors of n less than n
     f_list = [1]
     for i in range(2, math.floor(math.sqrt(n))+1):
-        if n % i == 0:
+        if (n % i) == 0:
             f_list.append(i)
             if n/i != i:
                 f_list.append(int(n/i))
@@ -294,3 +294,16 @@ def digit_permutations(num):
     permutations = set(int("".join(p)) for p in itertools.permutations(digits))
     return sorted(permutations)
 
+def euler_totient(n):
+    result = n
+    factor = 2
+    while factor * factor <= n:
+        if n % factor == 0:
+            
+            while n % factor == 0:
+                n //= factor
+            result -= result // factor
+        factor += 1
+    if n > 1:
+        result -= result // n
+    return result
