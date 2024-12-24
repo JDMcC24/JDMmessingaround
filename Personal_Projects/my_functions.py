@@ -1,7 +1,54 @@
 import math
 import numpy as np
 from matplotlib import pyplot as plt
-import itertools
+
+def factor_list(n):
+    fl = []
+    for i in range(1,math.ceil(n/2)+1):
+        if n%i == 0 :
+            fl.append(i)
+    if n >1:
+        fl.append(n)
+    return fl
+
+def triangle_number(n):
+    #Finds the next triangle number greater than n
+    i=1
+    tri = 1
+    while tri <= n:
+        i+=1
+        tri = sum(range(i))
+
+    return(tri)
+
+def triangle_number_list(n):
+    #Generates a list of all triangle numbers less than or equal to n
+    tri_list = [1]
+    i =1
+    while tri_list[-1] < n:
+        i+=1
+        tri_list.append(tri_list[-1] + i)
+    if tri_list[-1] > n:
+        tri_list.remove(tri_list[-1])
+    return tri_list
+
+def list__divisors(n):
+    #returns a list of the divisors of n
+    divisors = []
+    for i in range(1,math.ceil(n / 2)+1):
+        if n % i == 0:
+            divisors.append(i)
+    divisors.append(n)
+    return divisors
+
+def number_of_divisors(n):
+    #Finds the number of divisors of n
+    num = 0
+    for i in range(1,math.floor(math.sqrt(n))+1):
+        if n%i == 0:
+            num+=2
+    return num
+
 
 def prod(n):
     #Mulitples elemenst of a list
@@ -28,28 +75,6 @@ def is_prime(n):
             return False
     return True
 
-def prime_factors(n):
-    #Returns list of prime factors of n
-    if n <= 1:
-        return print("Error: prime_factors requires an integer greater than 1")
-    if type(n) != int:
-        return print("Error: prime_factors requires an integer greater than 1")
-
-    primes = []
-    while n > 1:
-        newprimes = []
-        for i in range(2, math.ceil(math.sqrt(n))+1):
-            if is_prime(i) == True and n%i ==0:
-                newprimes.append(i)
-        n = n / prod(newprimes)
-        primes = primes + newprimes
-        if is_prime(n)== True:
-            primes.append(int(n))
-            break
-        
-    return sorted(primes)
-
-
 def next_prime(a):
     #Returns the smallest prime number larger than a
     i = 1
@@ -68,6 +93,25 @@ def prime_list(n):
         if is_prime(i) == True:
             plist.append(i)
     return plist
+
+def prime_factors(n):
+    #Returns list of prime factors of n
+    if n <= 1:
+        return print("Error: prime_factors requires an integer greater than 1")
+    if type(n) != int:
+        return print("Error: prime_factors requires an integer greater than 1")
+
+    primes = []
+    while n > 1:
+        newprimes = []
+        for i in range(2, math.ceil(math.sqrt(n))+1):
+            if is_prime(i) == True and n%i ==0:
+                newprimes.append(i)
+        n = n / prod(newprimes)
+        primes = primes + newprimes
+        if is_prime(n)== True:
+            primes.append(int(n))
+            break
 
 def Gblist(n):
     #Input: Positive integer n
@@ -186,69 +230,12 @@ def is_palindrome(num):
     num_str = str(num)
     return num_str == num_str[::-1]
 
-def count_digits(n):
-    #Counts number of digits in n
-    n_string = str(n)
-    return len(n_string)
+def mintohours(t):
+    print("total time is "+ str(t//60) + " hours, "+ str( t%60) + " minutes")
 
-def Fibonacci_list(n):
-    #creates a list of the first n > 2 Fibonacci numbers
-    F_list = [1, 1] 
-    while len(F_list) < n:
-        F_list.append( F_list[-1] + F_list[-2])
-    return F_list
-
-def factor_list(n):
-    #lists all the factors of n less than n
-    f_list = [1]
-    for i in range(2, math.floor(math.sqrt(n))+1):
-        if n % i == 0:
-            f_list.append(i)
-            if n/i != i:
-                f_list.append(int(n/i))
-    return f_list
-
-
-
-def is_amicable(a,b):
-    a_factors = factor_list(a)
-    if sum(a_factors) == b:
-        b_factors = factor_list(b)
-        if sum(b_factors) == a:
-            return True
-        else:
-            return False
-    else:
-        return False
-    
-def is_abundant(n):
-    if sum(factor_list(n)) > n:
-        return True
-    else:
-        return False
-    
-
-
-def sum_of_abundants(n):
-    answr = False
-    for i in range(1,math.floor(n/2)+1):
-        if is_abundant(i):
-            if is_abundant(n-i):
-                answr = True
-                break
-    return answr
-
-
-def totient(n):
-    answr = 0
-    for i in range(1,n):
-        if math.gcd(n,i) == 1:
-            answr+=1
-    return answr
-
-def digit_permutations(num):
-    # Convert the number to a string to extract digits
-    digits = str(num)
-    permutations = set(int("".join(p)) for p in itertools.permutations(digits))
-    return sorted(permutations)
-
+def outlierearnings(a):
+    t = sum(a)
+    avr = sum(a)/len(a)
+    print("The total time worked is "+ str(t//60) + " hours, "+ str( t%60) + " minutes,")
+    print( str(t * 5/6 ) + " dollars made in this time.")
+    print("The average time spent per task is " + str(avr)+ " minutes.")
