@@ -86,34 +86,49 @@ def minsectominutes(m,s):
 # print(sp.latex(C))
 # print(sp.latex(C.jordan_form()))
 
-Z = 7
+Z = 5
 
 def pol(a):
-    return  (3* a**3 + 2*a**2 -1* a + 1)
+    return  ((Z+3)* a**3 + (Z+2)*a**2 -(Z+1)* a + 1)
+# for i in range(Z):
+#     print(i, pol(i),  pol(i) % Z )
+
+
+def pol2(a):
+    return  ((a+2)**3 * (a-1))
 for i in range(Z):
-    print(i, pol(i),  pol(i) % Z )
-
-#print( sp.pdiv(x**3 + 2*x**2 +1, (x-7)), 453%11)
-
-print(sp.latex(pol(x)))
+    print(i, pol2(i),  pol2(i) % Z )
+print( sp.latex(sp.expand(pol2(x))))
 
 
-# A = np.array([[1,1,0,0], [0,1,1,0], [0,0,1,1],[0,0,0,1]])
+# A = np.array([[1,0,0,0], [0,2,1,0], [0,0,2,1],[0,0,0,2]])
 # A = sp.Matrix(A)
 # print(sp.latex(A.T))
+# B = np.array([[1,0,0], [0,2,1], [0,0,2],])
+# B = sp.Matrix(B)
+# print(sp.latex(B.T))
 # A1 = np.array([[1,1], [1,0]])
 # A1 = sp.Matrix(A1)
 # print(sp.latex(A1))
 
 
-e = [ minsectominutes(20,5), minsectominutes(15,57),minsectominutes(16,20),minsectominutes(35,43),minsectominutes(17,37), minsectominutes(18,37)
-     , minsectominutes(26,54), minsectominutes(46,35), minsectominutes(15,32), minsectominutes(49,43), 7]
-
+e = [minsectominutes(12,1), minsectominutes(13,36), minsectominutes(54,33), minsectominutes(24,30), minsectominutes(25,9)
+     ,minsectominutes(48,79),minsectominutes(9,13), minsectominutes(12,36),minsectominutes(24,32), minsectominutes(23,51)]
 print(outlierearnings(e))
 
 
 
-px = (x-1)**2 * (x-2)**2 * (x+1)
-mx = (x-1) *(x-3)*(x-2)**3
-print(sp.latex((px)))
+# px = (x+1)**2 * (x+2)**2 * (x+1)
+# mx = (x-1) *(x-3)*(x-2)**3
+# print(sp.latex(sp.expand(px)))
+
+
+# A = np.array([[1,1],[0,1]])
+# A = sp.Matrix(A)
+# E = np.zeros([2,2])
+# E = sp.Matrix(E)
+# for i in range (0,20):
+#     E+= A**i / math.factorial(i)
+# print(E)
+# print(sp.latex(A.T))
 

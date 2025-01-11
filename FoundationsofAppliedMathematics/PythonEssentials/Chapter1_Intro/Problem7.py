@@ -7,7 +7,7 @@ def is_palindrome(num):
 
 # starttime = time()
 
-# #This is wildly inefficient
+# #This works but is wildly inefficient
 # palindromes = []
 # for i in range(100,1000):
 #     for j in range(i,1000):
@@ -15,7 +15,9 @@ def is_palindrome(num):
 #             palindromes.append(i*j)
 # print(max(palindromes), time() - starttime)
 
-#quicker method
+
+
+#Better method
 starttime = time()
 p = 0
 for i in range(100,1000):
