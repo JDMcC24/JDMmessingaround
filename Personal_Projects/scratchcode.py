@@ -112,8 +112,7 @@ print( sp.latex(sp.expand(pol2(x))))
 # print(sp.latex(A1))
 
 
-e = [minsectominutes(12,1), minsectominutes(13,36), minsectominutes(54,33), minsectominutes(24,30), minsectominutes(25,9)
-     ,minsectominutes(48,79),minsectominutes(9,13), minsectominutes(12,36),minsectominutes(24,32), minsectominutes(23,51)]
+e = [18.75, 48.25,16]
 print(outlierearnings(e))
 
 
