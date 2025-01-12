@@ -98,21 +98,21 @@ def MontyHallEstimate(n):
     stayer = 0
     changer = 0
     for i in range(n):
-        pick = random.choice(list(Doors))
-        winner = random.choice(list(Doors))
-        if pick == winner:
+        initialpick = random.choice(list(Doors))
+        winner = "A"
+
+        opendoor = {random.choice(list({"B","C"}.difference({initialpick})))}
+        NewDoors = Doors.difference(opendoor)
+        secondpick = NewDoors.difference(initialpick)
+        if initialpick ==winner:
             stayer +=1
-    for i in range(n):
-        pick = random.choice(list(Doors))
-        winner = random.choice(list(Doors))
-        opendoor = random.choice(list(Doors.difference({pick,winner})))
-        newdoors = Doors.difference(opendoor)
-        pick = random.choice(list(newdoors))
-        if pick==winner:
+        if winner in secondpick:
             changer+=1
+
     return 'Changer won '+ str(100* changer/n)+ "percent of the time. Stayer won "+ str(100* stayer/n ) +" percent of the time."
 
-print(MontyHallEstimate(1000000))
+print(MontyHallEstimate(100000))
+
 
 
 

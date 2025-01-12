@@ -95,7 +95,7 @@ def pol(a):
 
 
 def pol2(a):
-    return  ((a+2)**3 * (a-1))
+    return  ((a+1)* (a-1)**4)
 for i in range(Z):
     print(i, pol2(i),  pol2(i) % Z )
 print( sp.latex(sp.expand(pol2(x))))
