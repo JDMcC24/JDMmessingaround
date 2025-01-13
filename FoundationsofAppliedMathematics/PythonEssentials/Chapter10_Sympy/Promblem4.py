@@ -14,8 +14,8 @@ def prob4():
     r1 = sy.lambdify(t,r1)
     r2 = sy.lambdify(t,r2)
 
-    plt.plot(r1(dom)*np.cos(dom), r1(dom)*np.sin(dom), 'bo')
-    plt.plot(r2(dom)*np.cos(dom), r2(dom)*np.sin(dom), 'r*')
+    plt.plot(r1(dom)*np.cos(dom), r1(dom)*np.sin(dom), 'b')
+    plt.plot(r2(dom)*np.cos(dom), r2(dom)*np.sin(dom), 'b')
     plt.title("Rose Petal Curve")
     return plt.show()
 

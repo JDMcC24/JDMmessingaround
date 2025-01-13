@@ -36,7 +36,9 @@ def DiagM(n,r):
     #Output: Diagonal nxn matrix with postiive diagonal values between 0 and r
     if r <= 0:
         return print("Error! The second argurment must be positive.")
-    D = r* np.diag(np.random.rand(1,n)[0])
+    D = np.random.rand(1,n)
+    D = D/ np.max(D)
+    D = r* np.diag(D[0])
     while prod(np.diag(D)) == 0:
         D = r* np.diag(np.random.rand(1,n)[0])
     return D
@@ -76,12 +78,70 @@ def ReductionPlot(P,D):
     print("D matrix is ", D, sep = "\n")
     plt.show()
 
-P = np.array([[0.16531415, 0.32417886, 0.01862905, 0.23562475],
- [0.3851423,  0.14766764, 0.26246465, 0.0016378, ],
- [0.05894469, 0.22489492, 0.34313725, 0.28811765],
- [0.39059886, 0.30325858, 0.37576905, 0.4746198, ]])
-D = np.array([[3.97121496,0,0,0,],
- [0.   ,      1.60956246, 0. ,        0.  ,      ],
- [0.  ,       0.    ,     2.03084684, 0. ,       ],
- [0.    ,     0.    ,     0.    ,     3.97046905]])
-ReductionPlot(P,D)
+# P = np.array([[0.16531415, 0.32417886, 0.01862905, 0.23562475],
+#  [0.3851423,  0.14766764, 0.26246465, 0.0016378, ],
+#  [0.05894469, 0.22489492, 0.34313725, 0.28811765],
+#  [0.39059886, 0.30325858, 0.37576905, 0.4746198, ]])
+# D = np.array([[3.97121496,0,0,0,],
+#  [0.   ,      1.60956246, 0. ,        0.  ,      ],
+#  [0.  ,       0.    ,     2.03084684, 0. ,       ],
+#  [0.    ,     0.    ,     0.    ,     3.97046905]])
+# ReductionPlot(P,D)
+
+n = 2
+r = 1.01
+t = .1
+x0 = np.ones((1,n)).transpose()
+P= StochM(n)
+D = DiagM(n,r)
+M1 = Mmatrix(P,D,1)
+M2= Mmatrix(P,D,t)
+M3 = Mmatrix(P,D,0)
+x0 = np.ones((1,n)).transpose()
+M1path = x0
+for i in range(10):
+    x0 = M1 @ x0
+    M1path = np.append(M1path,x0,axis = 1) 
+M1xs = M1path[0,:]
+M1ys = M1path[1,:]
+#M1zs = M1path[2,:]
+plt.xlim((-.1,1.1*r))
+plt.ylim((-.1,1.1* r))
+plt.scatter(M1xs,M1ys, label  = "Pure Dispersal")
+print(M1)
+for i in range(len(M1xs)):
+    plt.annotate( f'{i}', (M1xs[i]+.005, M1ys[i]+.005))
+x0 = np.ones((1,n)).transpose()
+M2path = x0
+for i in range(10):
+    x0 = M2 @ x0
+    M2path = np.append(M2path,x0,axis = 1) 
+M2xs = M2path[0,:]
+M2ys = M2path[1,:]
+#M1zs = M1path[2,:]
+plt.xlim((-.1,1.1*r))
+plt.ylim((-.1,1.1* r))
+plt.scatter(M2xs,M2ys, label  = str(100* t)+ "percent Disperse")
+print(M2)
+for i in range(len(M2xs)):
+    plt.annotate( f'{i}', (M2xs[i]+.005, M2ys[i]+.005), )
+
+x0 = np.ones((1,n)).transpose()
+M3path = x0
+for i in range(10):
+    x0 = M3 @ x0
+    M3path = np.append(M3path,x0,axis = 1) 
+M3xs = M3path[0,:]
+M3ys = M3path[1,:]
+#M1zs = M1path[2,:]
+plt.xlim((-.1,1.1*r))
+plt.ylim((-.1,1.1* r))
+plt.scatter(M3xs,M3ys, label = 'No Dispersal')
+print(M2)
+for i in range(len(M3xs)):
+    plt.annotate( f'{i}', (M3xs[i]+.005, M3ys[i]+.005))
+
+plt.legend(loc = 'upper right')
+
+plt.show()
+
