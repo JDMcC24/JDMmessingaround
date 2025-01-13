@@ -1,1 +1,1 @@
-Nothing Special, just playing around with some things.
+Nothing serious here, just playing around and learning things

@@ -90,7 +90,7 @@ count = 0
 for siblings in children:
     if siblings[0]=='g' or siblings[1]=='g':
         count+=1
-print(1/count)
+#print(1/count)
 
 #Exercise 4 Monty Hall Problem
 def MontyHallEstimate(n):

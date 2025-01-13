@@ -10,5 +10,4 @@ def extras():
     ax = plt.figure().add_subplot(1,1,1, projection = '3d')
     ax.plot_surface(X,Y,g)
     plt.show()
-
 extras()

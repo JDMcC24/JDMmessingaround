@@ -86,7 +86,7 @@ def minsectominutes(m,s):
 # print(sp.latex(C))
 # print(sp.latex(C.jordan_form()))
 
-Z = 5
+Z = 7
 
 def pol(a):
     return  ((Z+3)* a**3 + (Z+2)*a**2 -(Z+1)* a + 1)
@@ -95,7 +95,7 @@ def pol(a):
 
 
 def pol2(a):
-    return  ((a+1)* (a-1)**4)
+    return  ((a-(Z+1))*(a-1)*(a-2)**2)
 for i in range(Z):
     print(i, pol2(i),  pol2(i) % Z )
 print( sp.latex(sp.expand(pol2(x))))
