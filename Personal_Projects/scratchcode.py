@@ -95,7 +95,7 @@ def pol(a):
 
 
 def pol2(a):
-    return  ((a-(Z+1))*(a-1)*(a-2)**2)
+    return  ((a-1)**3 * (a-2)**2)
 for i in range(Z):
     print(i, pol2(i),  pol2(i) % Z )
 print( sp.latex(sp.expand(pol2(x))))
@@ -112,14 +112,14 @@ print( sp.latex(sp.expand(pol2(x))))
 # print(sp.latex(A1))
 
 
-e = [18.75, 48.25,16]
+e = [minsectominutes(34,36),minsectominutes(48,56),minsectominutes(46,34), 30, minsectominutes(52,20), minsectominutes(25,42), minsectominutes(19,26), minsectominutes(20,48), minsectominutes(17,32), minsectominutes(17,19)]
 print(outlierearnings(e))
 
 
 
-# px = (x+1)**2 * (x+2)**2 * (x+1)
-# mx = (x-1) *(x-3)*(x-2)**3
-# print(sp.latex(sp.expand(px)))
+px = (x+3)**2 * (x-2)**2 * (x+1)
+mx = (x-2) *(x+3)*(x+1)
+print(sp.latex(sp.expand(mx)))
 
 
 # A = np.array([[1,1],[0,1]])
@@ -130,4 +130,9 @@ print(outlierearnings(e))
 #     E+= A**i / math.factorial(i)
 # print(E)
 # print(sp.latex(A.T))
+A = np.array([[.75,.5,0],[.25,.5,0],[0,0,1]])
+D = np.diag([.6,1.5,.5])
+D[2,0] = -.5
+print(D)
+print(np.linalg.eig(A @ D)[0])
 
