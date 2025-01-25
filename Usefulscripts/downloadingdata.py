@@ -1,5 +1,5 @@
-import os
-import requests
+import os, requests, zipfile
+
 
 # URL of the CSV file
 url = "https://www.cdc.gov/nchs/data/nsfg/2022-2023_FemRespData.csv"

@@ -44,7 +44,7 @@ import time
 
 
 """Polynomial Data"""
-n= 100 #Number of data points
+n= 10000 #Number of data points
 d = 2 #Degree of polynomial Must be at least 2
 xs = np.random.randn(n,1) +2
 dom = np.linspace(1.1* min(xs),1.1*max(xs),n)
@@ -60,7 +60,7 @@ eq = eq[:-1]
 eq+= f'average error is {round(erroraverage[0],2)}'
 
 #Plotting data
-plt.scatter(xs,ys, label = 'Data'+ eq, s = 10)
+plt.scatter(xs,ys, label = 'Data'+ eq, s = 5)
 plt.xlim(-.5, 1.1*max(xs))
 plt.ylim(-.5, 1.1*max(ys))
 
@@ -72,7 +72,8 @@ A = np.ones(np.shape(xs))
 for i in range(1,d+1):
     A = np.concatenate((A,xs**i), axis = 1)
 
-coeff = np.linalg.inv(A.T@ A)@ A.T @ ys
+#coeff = np.linalg.inv(A.T@ A)@ A.T @ ys
+coeff = np.linalg.solve(A.T@ A, A.T @ ys)
 regline = coeff[0]* np.ones(np.shape(dom))
 for i in range(1,d+1):
     regline += coeff[i]*dom**i
@@ -85,16 +86,17 @@ regtime = time.time() - starttime
 
 starttime = time.time() 
 from sklearn.preprocessing import PolynomialFeatures
-poly = PolynomialFeatures(degree = d)
+poly = PolynomialFeatures(degree = d, include_bias = True)
 model = LinearRegression()
 xs_poly = poly.fit_transform(xs)
 model.fit(xs_poly,ys)
 xs_range_poly = poly.transform(dom)
 ys_pred = model.predict(xs_range_poly)
-plt.plot(dom, ys_pred, color = 'green', label = 'ML-Curve')
+#plt.plot(dom, ys_pred, color = 'green', label = 'ML-Curve')
 MLtime = time.time() - starttime    
 plt.legend(loc = 'upper left')
 print('Normal Equations Time: ', regtime, 'seconds. ML Time: ', MLtime, 'seconds.') 
+print(f'Regression Coeffieints are {coeff} \n ML Coeffients are {model.coef_}')
 plt.show()
 
 """Take aways:

@@ -95,10 +95,10 @@ def pol(a):
 
 
 def pol2(a):
-    return  ((a-1)**3 * (a-2)**2)
+    return  ((a-1)**2 * (a-2)**2 * (a+1))
 for i in range(Z):
     print(i, pol2(i),  pol2(i) % Z )
-print( sp.latex(sp.expand(pol2(x))))
+print(sp.latex(sp.expand(pol2(x))))
 
 
 # A = np.array([[1,0,0,0], [0,2,1,0], [0,0,2,1],[0,0,0,2]])
@@ -117,9 +117,9 @@ print(outlierearnings(e))
 
 
 
-px = (x+3)**2 * (x-2)**2 * (x+1)
-mx = (x-2) *(x+3)*(x+1)
-print(sp.latex(sp.expand(mx)))
+# px = (x+3)**2 * (x-2)**2 * (x+1)
+# mx = (x-2) *(x+3)*(x+1)
+# print(sp.latex(sp.expand(mx)))
 
 
 # A = np.array([[1,1],[0,1]])
@@ -130,9 +130,18 @@ print(sp.latex(sp.expand(mx)))
 #     E+= A**i / math.factorial(i)
 # print(E)
 # print(sp.latex(A.T))
-A = np.array([[.75,.5,0],[.25,.5,0],[0,0,1]])
-D = np.diag([.6,1.5,.5])
-D[2,0] = -.5
-print(D)
-print(np.linalg.eig(A @ D)[0])
+# A = np.array([[.75,.5,0],[.25,.5,0],[0,0,1]])
+# D = np.diag([.6,1.5,.5])
+# D[2,0] = -.5
+# print(D)
+# print(np.linalg.eig(A @ D)[0])
 
+def rep(x0,r):
+    return (r*x0*(1-x0))**2
+
+x0=.5
+
+for i in range(0,10):
+    x0 = rep(x0,1.1)
+    print(x0)
+   
