@@ -102,10 +102,8 @@ html_code = """37107287533902102798797998220837590246510135740250<br>
 20849603980134001723930671666823555245252804609722<br>
 53503534226472524250874054075591789781264330331690<br>"""
 
-# Split the string by <br> to get individual numbers
 numbers = html_code.split('<br>')
 
-# Filter out any empty strings and convert the list of numbers from strings to integers
 number_list = [int(number) for number in numbers if number.strip()]
 
 print(str(sum(number_list))[0:10])

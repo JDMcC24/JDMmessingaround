@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import root_mean_squared_log_error
+from sklearn.metrics import accuracy_score
 import os, requests, zipfile
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
@@ -14,8 +15,20 @@ from sklearn.impute import SimpleImputer
 from matplotlib import pyplot as plt
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import LabelEncoder
+from sklearn.impute import KNNImputer
 from xgboost import XGBClassifier
+
 import xgboost as xgb
+
+from catboost import CatBoostClassifier
+
+from sklearn.ensemble import VotingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+
+
+
 
 import time 
 
@@ -57,7 +70,7 @@ label_encoder = LabelEncoder()
 #print(X.columns)
 y = X.pop('Survived')
 y = y.astype('int')
-print(y)
+#print(y)
 X = X.drop(columns=['Name'])
 col = X.columns[1:]
 print(col)
@@ -70,20 +83,98 @@ X_train, X_val, y_train, y_val = train_test_split(X,y)
 
 
 ##Checking models
-# def get_score(n_estimators):
-#     my_pipeline = Pipeline(steps=[
-#         ('preprocessor', SimpleImputer()),
-#         ('model', RandomForestRegressor(n_estimators, random_state=42))
-#     ])
-#     scores = -1 * cross_val_score(my_pipeline, X_train, y_train,
-#                                   cv=3,
-#                                   scoring= 'accuracy')
+from sklearn.impute import KNNImputer
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import StandardScaler
+
+my_pipeline = Pipeline(steps=[
+        ('preprocessor', KNNImputer()),
+        #('preprocessor', SimpleImputer()),
+        ('scaler', StandardScaler()),
+        ('model', XGBClassifier())
+    ])
+
+
+from sklearn.model_selection import GridSearchCV
+
+# n=20
+# step_size = 50
+# n_estimators = []
+# for i in range(1,n+1):
+#     n_estimators.append(int(i*step_size))
+# neighbors= list(range(1,11))
+# rates = list(np.linspace(0.0001,.15,10))
+
+# #print(rates)
+# print("Starting GridSearch")
+# param_grid = {'preprocessor__n_neighbors' :  neighbors,
+#      'model__n_estimators': n_estimators,
+#      'model__learning_rate': rates  
+#      }
+
+# grid_search = GridSearchCV( estimator=my_pipeline, param_grid = param_grid, cv = 4, scoring = 'neg_mean_absolute_error', verbose = 1)
+# grid_search.fit(X_train, y_train)
+# print(grid_search.best_params_)
+
+
+# plt.plot(n_estimators,scores,'s')
+# plt.show()
+
+## n_estimators = 250 seems best
+
+
+## Trying VotingClassifer for comparison
+
+
+# Define individual models with pipelines
+# model1 = Pipeline([
+#     ('imputer', SimpleImputer(strategy='mean')),
+#     ('classifier', XGBClassifier(random_state=42))
+# ])
+# model2 = Pipeline([
+#     ('imputer', SimpleImputer(strategy='mean')),
+#     ('classifier', CatBoostClassifier(random_state=42))
+# ])
+# model3 = Pipeline([
+#     ('imputer', SimpleImputer(strategy='mean')),
+#     ('classifier', SVC(probability=True, random_state=42))
+# ])
+
+# # Combine models into a VotingClassifier
+# voting_clf = VotingClassifier(estimators=[
+#     ('xbg', model1), 
+#     ('cb', model2), 
+#     ('svc', model3)
+# ], voting='soft')
+
+# Perform cross-validation
+
+
+#cv_scores = cross_val_score(voting_clf, X_train, y_train, cv=5, scoring='accuracy')
+
+# def get_score3(n_estimators):
+#     model1 = Pipeline([
+#         ('imputer', SimpleImputer(strategy='mean')),
+#         ('classifier', XGBClassifier(n_estimators = n_estimators,random_state=42, learning_rate = 0.05))
+#         ])
+#     model2 = Pipeline([
+#         ('imputer', SimpleImputer(strategy='mean')),
+#         ('classifier', CatBoostClassifier(random_state=42))
+#         ])
+#     model3 = Pipeline([
+#         ('imputer', SimpleImputer(strategy='mean')),
+#         ('classifier', SVC(probability=True, random_state=42))
+#         ])
+
+# # Combine models into a VotingClassifier
+#     voting_clf = VotingClassifier(estimators=[
+#         ('xbg', model1), 
+#         ('cb', model2), 
+#         ('svc', model3)
+#         ], voting='soft')
+#     scores = cross_val_score(voting_clf, X_train, y_train, cv=5, scoring='accuracy')
 #     return scores.mean()
 
-# def get_score2(n_estimators):
-#     model = XGBClassifier(n_estimators = n_estimators, learning_rate = 0.05)
-#     scores = cross_val_score(model, X_train, y_train, cv=5, scoring='accuracy')
-#     return scores.mean()
 
 # n=20
 # step = 50
@@ -94,7 +185,7 @@ X_train, X_val, y_train, y_val = train_test_split(X,y)
 # timescores = []
 # times = time.time()
 # for i in n_estimators:
-#     s = get_score2(i)
+#     s = get_score3(i)
 #     scores.append(s)
 #     t = time.time()- times
 #     times = time.time()
@@ -103,16 +194,52 @@ X_train, X_val, y_train, y_val = train_test_split(X,y)
     
 # print(sum(timescores))
 
-# plt.plot(n_estimators,scores,'s')
+# plt.plot(n_estimators,scores,'-')
 # plt.show()
 
-## n_estimators = 250 seems best
 
-#Creating Full model
-titanic_model = XGBClassifier(n_estimators = 100, learning_rate = 0.05)
+# Print the cross-validation scores
+# print(f"Cross-Validation Accuracy Scores: {cv_scores}")
+# print(f"Mean Cross-Validation Accuracy: {cv_scores.mean()}")
+
+
+# Creating Full model With XGBClassifer
+# titanic_model = XGBClassifier(n_estimators = 100, learning_rate = 0.05)
+# titanic_model.fit(X,y)
+
+#Creating Full model with VotingClassifer
+# model1 = Pipeline([
+#         ('imputer', SimpleImputer(strategy='mean')),
+#         ('classifier', XGBClassifier(n_estimators = 150, learning_rate = 0.05))
+#         ])
+# model2 = Pipeline([
+#         ('imputer', SimpleImputer(strategy='mean')),
+#         ('classifier', CatBoostClassifier())
+#         ])
+# model3 = Pipeline([
+#         ('imputer', SimpleImputer(strategy='mean')),
+#         ('classifier', SVC(probability=True, ))
+#         ])
+
+# # Combine models into a VotingClassifier
+# titanic_model = VotingClassifier(estimators=[
+#         ('xbg', model1), 
+#         ('cb', model2), 
+#         ('svc', model3)
+#         ], voting='soft')
+# titanic_model.fit(X,y)
+
+
+
+
+# """Pipline Model"""
+titanic_model = Pipeline([
+    ('imputer', KNNImputer(n_neighbors=10)),
+    ('scaler', StandardScaler()),
+    ('classifier', XGBClassifier(n_estimators = 50, learning_rate = 0.016755555555555555))])
 titanic_model.fit(X,y)
 
-
+""" Making and Saving Predictions"""
 test = pd.read_csv(r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\Titanic\test.csv')
 test = test.drop(columns=['Name'])
 #passids = test.pop('PassengerID')
@@ -138,4 +265,4 @@ output.to_csv(full_path, index=False,)
 print(output.describe())
 
 #Most recent percentile
-print(f'Most recent percentile is {(1- (2858/13201))*100 }')
+print(f'Most recent percentile is {(1- (2697/12992))*100 }')

@@ -19,48 +19,112 @@ import time
 
 starttime = time.time()
 
-# my_pipeline = Pipeline(steps=[('preprocessor', SimpleImputer()),
-#                               ('model', RandomForestRegressor(n_estimators=50,
-#                                                               random_state=42))
-#                              ])
 
 
 
-X = pd.read_csv(r'datasets\housingpricescompetition\home-data-for-ml-course\train.csv', index_col= "Id")
-X.dropna(axis = 0, subset=['SalePrice'], inplace = True)
-y = X.SalePrice
-X.drop(['SalePrice'], axis = 1, inplace = True)
-# Select numeric columns
 
-numeric_cols = [cname for cname in X.columns if X[cname].dtype in ['int64', 'float64']]
-my_cols = numeric_cols
-X = X[my_cols]
 
-X_train, X_valid, y_train, y_valid = train_test_split(X, y,random_state=42)
+"""Preprocessing X, changing categorical Data to integers"""
 
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+
+X = pd.read_csv(r'datasets\housingpricescompetition\home-data-for-ml-course\train.csv')
+#X.dropna(axis = 0, subset=['SalePrice'], inplace = True)
+y = X.pop('SalePrice')
+labels = X.pop('Id')
+col = X.columns[1:]
+#print(col)
+for c in col:
+    if X[c].dtype != 'int' and  X[c].dtype != 'float':
+        X[c] = label_encoder.fit_transform(X[c])
+
+
+
+
+""" Feature Selection and Seperating Targets from Features"""
+#print(X.columns)
+#features = ['MSSubClass', 'LotArea','Condition1', 'OverallCond',  'YearBuilt', 'YearRemodAdd', 'TotalBsmtSF','HeatingQC', '1stFlrSF',
+            # '2ndFlrSF', 'BedroomAbvGr', 'FullBath', 'HalfBath','GarageType','Functional','WoodDeckSF','YrSold', 'SaleType', 'SaleCondition',
+            #  'PoolArea', 'PoolQC', 'Fence']
+#features = X.columns
+num_of_features = 79
+
+correlation = []
+for c in X.columns:
+    correlation.append( X[c].corr(y))
+correlation = np.array([correlation])
+featureindices = np.argsort(correlation)[0][-1* num_of_features:]
+features = []
+for c in featureindices:
+    features.append(X.columns[c])
+
+
+
+X= X[features]
+# print(X.describe())
+
+
+""" Splitting data"""
+X_train, X_valid, y_train, y_valid = train_test_split(X, y,random_state=1)
+
+from sklearn.impute import KNNImputer
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import StandardScaler
+
+
+
+""" Creating pipeline for XGBRegressor and cross validating"""
 #Checking models
-def get_score(n_estimators):
-    my_pipeline = Pipeline(steps=[
-        ('preprocessor', SimpleImputer()),
-        ('model', RandomForestRegressor(n_estimators, random_state=42))
+# def get_score(n_estimators):
+#     my_pipeline = Pipeline(steps=[
+#         ('preprocessor', KNNImputer(n_neighbors=5)),
+#         #('preprocessor', SimpleImputer()),
+#         ('scaler', StandardScaler()),
+#         ('model', XGBRegressor(n_estimators=n_estimators, learning_rate = 0.05, random_state =1))
+#     ])
+#     scores = -1 * cross_val_score(my_pipeline, X_train, y_train,
+#                                   cv=5,
+#                                   scoring='neg_mean_absolute_error')
+#     return scores.mean()
+my_pipeline = Pipeline(steps=[
+        ('preprocessor', KNNImputer()),
+        #('preprocessor', SimpleImputer()),
+        ('scaler', StandardScaler()),
+        ('model', XGBRegressor())
     ])
-    scores = -1 * cross_val_score(my_pipeline, X_train, y_train,
-                                  cv=5,
-                                  scoring='neg_mean_absolute_error')
-    return scores.mean()
 
-# n=15
-# n_estimators = []
-# for i in range(1,n+1):
-#     n_estimators.append(int(i*50))
+
+from sklearn.model_selection import GridSearchCV
+
+n=20
+step_size = 50
+n_estimators = []
+for i in range(1,n+1):
+    n_estimators.append(int(i*step_size))
+neighbors= list(range(1,11))
+rates = list(np.linspace(0.0001,.15,10))
+
+print(rates)
+print("Starting GridSearch")
+param_grid = {'preprocessor__n_neighbors' :  neighbors,
+     'model__n_estimators': n_estimators,
+     'model__learning_rate': rates  
+     }
+
+grid_search = GridSearchCV( estimator=my_pipeline, param_grid = param_grid, cv = 4, scoring = 'neg_mean_absolute_error', verbose = 1)
+grid_search.fit(X, y)
+print(grid_search.best_params_)
+
 # scores = []
 # timescores = []
 # times = time.time()
 # for i in n_estimators:
-#     scores.append(get_score(i))
+#     s = get_score(i)
+#     scores.append(s)
 #     t = time.time()- times
 #     times = time.time()
-#     print(t)
+#     print(f' {i} = n_estimators, time taken {t} seconds. Accuracy is {s}')
 #     timescores.append(t)
     
 # print(sum(timescores))
@@ -68,32 +132,60 @@ def get_score(n_estimators):
 # plt.plot(n_estimators,scores)
 # plt.show()
 
+
+""" Defining Random Forest Model"""
 #Define model
-model = RandomForestRegressor(n_estimators=600, random_state=42)
+#model = RandomForestRegressor(n_estimators=600, random_state=42)
 # model.fit(X_train,y_train)
 # predictions = model.predict(X_valid)
 # mae = mean_absolute_error(predictions, y_valid)
 # print(f'Mean absolute error is {mae}')
-rf_model_on_full_data = RandomForestRegressor(n_estimators=400,random_state =1 )
-rf_model_on_full_data.fit(X,y)
+#rf_model_on_full_data = RandomForestRegressor(n_estimators=400,random_state =1 )
+#rf_model_on_full_data.fit(X,y)
 
-test_data= pd.read_csv(r'datasets\housingpricescompetition\home-data-for-ml-course\test.csv')
-# test_data.dropna(axis = 0, subset=['SalePrice'], inplace = True)
-# test_data.drop(['SalePrice'], axis = 1, inplace = True)
-test_X = test_data[my_cols]
-test_preds = rf_model_on_full_data.predict(test_X)
-
-
-folder_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\housingpricescompetition\home-data-for-ml-course'
-file_name = 'submission.csv'
-full_path = os.path.join(folder_path, file_name)
-
-output = pd.DataFrame({'Id': test_data.Id,
-                       'SalePrice': test_preds})
-
-output.to_csv(full_path, index=False,)
+# # """ Defining Pipeline model"""
+# my_pipeline = Pipeline(steps=[
+#         ('preprocessor', KNNImputer(n_neighbors= 4)),
+#         #('preprocessor', SimpleImputer()),
+#         ('scaler', StandardScaler()),
+#         ('model', XGBRegressor(learning_rate =  0.08337777777777779, n_estimators= 350))
+#     ])
+# my_pipeline.fit(X,y)
 
 
-print(f'Total run time {time.time()-starttime}')
-print(((5310-1361)/5310)*100, ' Percentile')
+# # """ Processing Test Data"""
+# test_X= pd.read_csv(r'datasets\housingpricescompetition\home-data-for-ml-course\test.csv')
+# labels = test_X.pop('Id')
+# #print(test_X.head())
+# col = test_X.columns[1:]
+# #print(col)
+# for c in col:
+#     if test_X[c].dtype != 'int' and  test_X[c].dtype != 'float':
+#         test_X[c] = label_encoder.fit_transform(test_X[c])
+
+# test_X = test_X[features]
+
+
+
+# # """Making Predictions"""
+# # #test_preds = rf_model_on_full_data.predict(test_X)
+# test_preds = my_pipeline.predict(test_X)
+# test_X.insert(0,'Id',labels)
+# #print(test_X.columns)
+
+# # """Saving submission"""
+# folder_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\housingpricescompetition\home-data-for-ml-course'
+# file_name = 'submission.csv'
+# full_path = os.path.join(folder_path, file_name)
+
+# output = pd.DataFrame({'Id': test_X.Id,
+#                        'SalePrice': test_preds})
+
+# output.to_csv(full_path, index=False,)
+
+
+# # """ Estimates"""
+# print(f'Total run time {time.time()-starttime}')
+# print(f'Expected accuracy = {-1* cross_val_score(my_pipeline,X,y, scoring='neg_mean_absolute_error').mean()}')
+# print(((5310-1361)/5310)*100, ' Percentile')
 

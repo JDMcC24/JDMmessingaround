@@ -9,6 +9,7 @@ from my_functions import *
 #import sklearn
 import time
 
+
 def minsectominutes(m,s):
     return m + s/60
 
@@ -86,19 +87,19 @@ def minsectominutes(m,s):
 # print(sp.latex(C))
 # print(sp.latex(C.jordan_form()))
 
-Z = 7
+# Z = 7
 
-def pol(a):
-    return  ((Z+3)* a**3 + (Z+2)*a**2 -(Z+1)* a + 1)
+# def pol(a):
+#     return  ((Z+3)* a**3 + (Z+2)*a**2 -(Z+1)* a + 1)
+# # for i in range(Z):
+# #     print(i, pol(i),  pol(i) % Z )
+
+
+# def pol2(a):
+#     return  ((a-1)**2 * (a-2)**2 * (a+1))
 # for i in range(Z):
-#     print(i, pol(i),  pol(i) % Z )
-
-
-def pol2(a):
-    return  ((a-1)**2 * (a-2)**2 * (a+1))
-for i in range(Z):
-    print(i, pol2(i),  pol2(i) % Z )
-print(sp.latex(sp.expand(pol2(x))))
+#     print(i, pol2(i),  pol2(i) % Z )
+# print(sp.latex(sp.expand(pol2(x))))
 
 
 # A = np.array([[1,0,0,0], [0,2,1,0], [0,0,2,1],[0,0,0,2]])
@@ -111,9 +112,6 @@ print(sp.latex(sp.expand(pol2(x))))
 # A1 = sp.Matrix(A1)
 # print(sp.latex(A1))
 
-
-e = [minsectominutes(34,36),minsectominutes(48,56),minsectominutes(46,34), 30, minsectominutes(52,20), minsectominutes(25,42), minsectominutes(19,26), minsectominutes(20,48), minsectominutes(17,32), minsectominutes(17,19)]
-print(outlierearnings(e))
 
 
 
@@ -136,12 +134,75 @@ print(outlierearnings(e))
 # print(D)
 # print(np.linalg.eig(A @ D)[0])
 
-def rep(x0,r):
-    return (r*x0*(1-x0))**2
+# def rep(x0,r):
+#     return (r*x0*(1-x0))**2
 
-x0=.5
+# x0=.5
 
-for i in range(0,10):
-    x0 = rep(x0,1.1)
-    print(x0)
-   
+# for i in range(0,10):
+#     x0 = rep(x0,1.1)
+#     print(x0)
+
+import itertools 
+import random
+
+
+def game1():
+    a = 1
+    b = 100
+    dom = range(a,b+1)
+    correct = random.choice(dom)
+    guess = 50
+    turn = 1
+    #print(f'The correct number is {correct}')
+    while (guess != correct) and (turn <= 10):
+        #print(guess)
+
+        if guess < correct:
+            a = guess
+        else: 
+            b = guess
+        guess = round((b + a)/2)
+        turn+=1
+
+    return turn
+#print(game())
+def game2():
+    a = 1
+    b = 100
+    dom = range(a,b+1)
+    correct = random.choice(dom)
+    guess = 50
+    turn = 1
+    #print(f'The correct number is {correct}')
+    while (guess != correct) and (turn <= 1000):
+        #print(guess)
+
+        if guess < correct:
+            a = guess
+        else: 
+            b = guess
+        guess = random.choice(range(a,b+1))
+        #guess = a+1
+        turn+=1
+    return turn
+
+import statistics
+guesses1=[]
+guesses2 = []
+k=1000
+for n in range(k):
+    guesses1.append(game1())
+    guesses2.append(game2())
+n = 10
+bins = np.linspace(0,n,n+1)
+
+fig, axs = plt.subplots(1,2, figsize=(10,5))
+axs[0].hist(guesses1,bins, edgecolor = 'black', label = "Smart Strategy")
+axs[0].set_title(f"The mean number of guesses taken is {statistics.mean(guesses1)} ")
+axs[1].hist(guesses2,bins, edgecolor = 'black', label = "Random Strategy")
+axs[1].set_title(f"The mean number of guesses taken is {statistics.mean(guesses2)}")
+plt.show()
+
+    
+

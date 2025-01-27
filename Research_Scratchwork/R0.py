@@ -115,5 +115,32 @@ plt.plot(range(m), R0list, 'r', label = 'R0')
 plt.plot(range(m), ones, 'g', label = 'y = 1')
 plt.legend(loc = 'upper left')
 plt.title('R0 is almost more extreme than r \n n = '+ str(n)+ '. Maximum Fecundity = '+ str(f)+'.')
-plt.show()
+#plt.show()
 
+
+
+plt.clf()
+def f(t):
+    return  1 + (t * 2)
+def p(t) :
+    return  (1-t)*2
+
+dom = np.linspace(0,1,100)
+rs = []
+R0list =[]
+eye = np.eye(2)
+for t in dom:
+     T = np.array([[0,0],[p(t),0]])
+     F = np.array([[f(t),f(t)],[0,0]])
+     A = T+F
+     r = spradius(A)
+     rs.append(r) 
+     Nextgenmat = F @ inv((eye - T))
+     R0 = spradius(Nextgenmat)
+     R0list.append(R0)
+plt.plot(dom, rs, 'b', label = 'Spectral Radius')
+plt.plot(dom, R0list, 'r', label = 'R0')
+plt.plot(dom, np.ones(dom.shape), 'g')
+plt.plot(.5*np.ones(dom.shape), 4*dom, 'g', label = 't = 0.5') 
+plt.legend(loc = 'upper left')
+plt.show()
