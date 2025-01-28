@@ -17,7 +17,7 @@ import itertools
 # print(answer, time.time()- starttime)
 
 starttime = time.time()
-limit = 10**7
+limit = 10**3
 minratio = 10
 answer = 1
 for n in range(2,limit):
