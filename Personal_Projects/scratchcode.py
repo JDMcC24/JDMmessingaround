@@ -35,34 +35,5 @@ import time
 #x,y,z = sp.symbols(' x y z')
 starttime = time.time()
 
-def totient(n):
-    answr = 0
-    for i in range(1,n):
-        if math.gcd(n,i) == 1:
-            answr+=1
-    return answr
 
-print(prime_factors(125))
-
-def euler_totient(n):
-    result = n
-    # Check for factors from 2 to √n
-    factor = 2
-    while factor * factor <= n:
-        # If factor divides n, it's a prime factor
-        if n % factor == 0:
-            # Subtract multiples of the prime factor from result
-            while n % factor == 0:
-                n //= factor
-            result -= result // factor
-        factor += 1
-    # If n is a prime number greater than 1, apply totient formula to it
-    if n > 1:
-        result -= result // n
-    return result
-
-starttime = time.time()
-print(totient(10000000), time.time()-starttime)
-
-starttime = time.time()
-print(euler_totient(10000000), time.time()-starttime)
+print(np.linalg.norm([4, 4* math.sqrt(3)]))
