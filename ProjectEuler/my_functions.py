@@ -307,3 +307,6 @@ def euler_totient(n):
     if n > 1:
         result -= result // n
     return result
+
+def mintohours(t):
+    print("total time is "+ str(t//60) + " hours, "+ str( t%60) + " minutes")
