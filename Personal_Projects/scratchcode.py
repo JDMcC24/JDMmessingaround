@@ -14,58 +14,59 @@ def minsectominutes(m,s):
     return m + s/60
 
 
-# print(np.sum(e, axis = 1), e.shape )
+x = sp.Symbol('x')
+
+def poly1(x):
+    return (x-1)**2 *(x+1)**2 *(x+3)
+
+#print(poly1(x))
 
 
-# Bill = 0.05 + 0.5/20 +0.5/10 + 1/2.5
-# Bob = .75/8 + .5/16 + .5/8 + 1/2
-# print(Bill, Bob)
 
-# seq = [3]
-# for i in range(0,7):
-#     seq.append((seq[i])**2 - seq[i] )
+"""Math Bio Problem(s)"""
 
-# print(seq)
-# x = sp.Symbol('x')
-# eq = sp.Eq( x/15, (x-.25)/5)
-# print(sp.solveset(eq))
+## x(t+1) = MPx(t)
+
+x, y, z = sp.symbols('x y z')
+M = np.array([ [.75 , .5], [0.25,.5]])
+r1 = .5
+r2 = 1.2
+#D = np.array([[r1*x*(1-x)], [r2*y*(1-y)], [r1 *y*(1-y) ]])
+D0 = np.array([[r1, 0],[0, r2]])
+#M = sp.Matrix(M)
+print(sp.latex(sp.Matrix(M)))
+#print(M@D0)
+#print((D0))
+#print(sp.latex(M))
+
+
+def find_lcm(a, b):
+    # Calculate the Greatest Common Divisor (GCD) using math.gcd()
+    gcd = math.gcd(a, b)
     
-#print(110/15)
+    # Calculate the Least Common Multiple (LCM)
+    lcm = abs(a * b) // gcd
+    
+    return lcm
+# print(find_lcm(439582,97850))
 
-#plot3d(1- x**2 + y**2, (x,-1,1), (y,-1,1) )
+e = [minsectominutes(2,21),minsectominutes(18,13),minsectominutes(20,58),minsectominutes(6,33), minsectominutes(24,7)]
 
+# """" Limits """
+# def seqfun(x):
+#     return .5*x*(1-x)
+# a = 2/3 
+# for i in range(0,10): 
+#     a = seqfun(a)
+#     print(a)pip in
 
-#x,y,z = sp.symbols(' x y z')
-starttime = time.time()
+f = 1/(x**2 * sp.log(x))
+#result = sp.integrate(f,(x,1,sp.oo))
+#print(result)
 
-def totient(n):
-    answr = 0
-    for i in range(1,n):
-        if math.gcd(n,i) == 1:
-            answr+=1
-    return answr
+# dom = np.linspace(0,10)
+# sp.plotting.plot(f,(x,1,10))
+# sp.plotting(plot(f,(x,0,1)))
+# plt.show()
+print(outlierearnings(e))
 
-print(prime_factors(125))
-
-def euler_totient(n):
-    result = n
-    # Check for factors from 2 to √n
-    factor = 2
-    while factor * factor <= n:
-        # If factor divides n, it's a prime factor
-        if n % factor == 0:
-            # Subtract multiples of the prime factor from result
-            while n % factor == 0:
-                n //= factor
-            result -= result // factor
-        factor += 1
-    # If n is a prime number greater than 1, apply totient formula to it
-    if n > 1:
-        result -= result // n
-    return result
-
-starttime = time.time()
-print(totient(10000000), time.time()-starttime)
-
-starttime = time.time()
-print(euler_totient(10000000), time.time()-starttime)

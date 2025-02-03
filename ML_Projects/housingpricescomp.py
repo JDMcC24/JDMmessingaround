@@ -33,11 +33,27 @@ X = pd.read_csv(r'datasets\housingpricescompetition\home-data-for-ml-course\trai
 #X.dropna(axis = 0, subset=['SalePrice'], inplace = True)
 y = X.pop('SalePrice')
 labels = X.pop('Id')
-col = X.columns[1:]
-#print(col)
-for c in col:
-    if X[c].dtype != 'int' and  X[c].dtype != 'float':
-        X[c] = label_encoder.fit_transform(X[c])
+# col = X.columns[1:]
+# #print(col)
+# for c in col:
+#     if X[c].dtype != 'int' and  X[c].dtype != 'float':
+#         X[c] = label_encoder.fit_transform(X[c])
+features = ['MSSubClass', 'LotArea','Condition1', 'OverallCond',  'YearBuilt', 'YearRemodAdd', 'TotalBsmtSF','HeatingQC', '1stFlrSF',
+            '2ndFlrSF', 'BedroomAbvGr', 'FullBath', 'HalfBath','GarageType','Functional','WoodDeckSF','YrSold', 'SaleType', 'SaleCondition',
+             'PoolArea', 'PoolQC', 'Fence']
+#features = X.columns
+X = X[features]
+cat_features = []
+for c in features:
+    if X[c].dtype == 'object':
+        cat_features.append(c)
+
+#print(cat_features)
+
+X = pd.get_dummies(X,columns=cat_features)
+X = X.drop(columns=['PoolQC_Fa'])
+print(X.head())
+
 
 
 
@@ -48,20 +64,20 @@ for c in col:
             # '2ndFlrSF', 'BedroomAbvGr', 'FullBath', 'HalfBath','GarageType','Functional','WoodDeckSF','YrSold', 'SaleType', 'SaleCondition',
             #  'PoolArea', 'PoolQC', 'Fence']
 #features = X.columns
-num_of_features = 79
+# num_of_features = 80
 
-correlation = []
-for c in X.columns:
-    correlation.append( X[c].corr(y))
-correlation = np.array([correlation])
-featureindices = np.argsort(correlation)[0][-1* num_of_features:]
-features = []
-for c in featureindices:
-    features.append(X.columns[c])
+# correlation = []
+# for c in X.columns:
+#     correlation.append( X[c].corr(y))
+# correlation = np.array([correlation])
+# featureindices = np.argsort(correlation)[0][-1* num_of_features:]
+# features = []
+# for c in featureindices:
+#     features.append(X.columns[c])
 
 
 
-X= X[features]
+#X= X[features]
 # print(X.describe())
 
 
@@ -87,34 +103,34 @@ from sklearn.preprocessing import StandardScaler
 #                                   cv=5,
 #                                   scoring='neg_mean_absolute_error')
 #     return scores.mean()
-my_pipeline = Pipeline(steps=[
-        ('preprocessor', KNNImputer()),
-        #('preprocessor', SimpleImputer()),
-        ('scaler', StandardScaler()),
-        ('model', XGBRegressor())
-    ])
+# my_pipeline = Pipeline(steps=[
+#         ('preprocessor', KNNImputer()),
+#         #('preprocessor', SimpleImputer()),
+#         ('scaler', StandardScaler()),
+#         ('model', XGBRegressor())
+#     ])
 
 
-from sklearn.model_selection import GridSearchCV
+# from sklearn.model_selection import GridSearchCV
 
-n=20
-step_size = 50
-n_estimators = []
-for i in range(1,n+1):
-    n_estimators.append(int(i*step_size))
-neighbors= list(range(1,11))
-rates = list(np.linspace(0.0001,.15,10))
+# n=20
+# step_size = 50
+# n_estimators = []
+# for i in range(1,n+1):
+#     n_estimators.append(int(i*step_size))
+# neighbors= list(range(1,11))
+# rates = list(np.linspace(0.0001,.15,10))
 
-print(rates)
-print("Starting GridSearch")
-param_grid = {'preprocessor__n_neighbors' :  neighbors,
-     'model__n_estimators': n_estimators,
-     'model__learning_rate': rates  
-     }
+# print(rates)
+# print("Starting GridSearch")
+# param_grid = {'preprocessor__n_neighbors' :  neighbors,
+#      'model__n_estimators': n_estimators,
+#      'model__learning_rate': rates  
+#      }
 
-grid_search = GridSearchCV( estimator=my_pipeline, param_grid = param_grid, cv = 4, scoring = 'neg_mean_absolute_error', verbose = 1)
-grid_search.fit(X, y)
-print(grid_search.best_params_)
+# grid_search = GridSearchCV( estimator=my_pipeline, param_grid = param_grid, cv = 4, scoring = 'neg_mean_absolute_error', verbose = 1)
+# grid_search.fit(X, y)
+# print(grid_search.best_params_)
 
 # scores = []
 # timescores = []
@@ -153,39 +169,67 @@ print(grid_search.best_params_)
 # my_pipeline.fit(X,y)
 
 
-# # """ Processing Test Data"""
-# test_X= pd.read_csv(r'datasets\housingpricescompetition\home-data-for-ml-course\test.csv')
-# labels = test_X.pop('Id')
-# #print(test_X.head())
-# col = test_X.columns[1:]
+# """ Processing Test Data"""
+test_X= pd.read_csv(r'datasets\housingpricescompetition\home-data-for-ml-course\test.csv')
+labels = test_X.pop('Id')
+# col = X.columns[1:]
 # #print(col)
 # for c in col:
-#     if test_X[c].dtype != 'int' and  test_X[c].dtype != 'float':
-#         test_X[c] = label_encoder.fit_transform(test_X[c])
+#     if X[c].dtype != 'int' and  X[c].dtype != 'float':
+#         X[c] = label_encoder.fit_transform(X[c])
+features = ['MSSubClass', 'LotArea','Condition1', 'OverallCond',  'YearBuilt', 'YearRemodAdd', 'TotalBsmtSF','HeatingQC', '1stFlrSF',
+            '2ndFlrSF', 'BedroomAbvGr', 'FullBath', 'HalfBath','GarageType','Functional','WoodDeckSF','YrSold', 'SaleType', 'SaleCondition',
+             'PoolArea', 'PoolQC', 'Fence']
+#features = X.columns
+test_X = test_X[features]
+cat_features = []
+for c in features:
+    if test_X[c].dtype == 'object':
+        cat_features.append(c)
 
-# test_X = test_X[features]
+#print(cat_features)
 
+test_X = pd.get_dummies(test_X,columns=cat_features)
+print(test_X.head())
 
-
-# # """Making Predictions"""
-# # #test_preds = rf_model_on_full_data.predict(test_X)
-# test_preds = my_pipeline.predict(test_X)
-# test_X.insert(0,'Id',labels)
-# #print(test_X.columns)
-
-# # """Saving submission"""
-# folder_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\housingpricescompetition\home-data-for-ml-course'
-# file_name = 'submission.csv'
-# full_path = os.path.join(folder_path, file_name)
-
-# output = pd.DataFrame({'Id': test_X.Id,
-#                        'SalePrice': test_preds})
-
-# output.to_csv(full_path, index=False,)
+#print(cat_features)
 
 
-# # """ Estimates"""
-# print(f'Total run time {time.time()-starttime}')
-# print(f'Expected accuracy = {-1* cross_val_score(my_pipeline,X,y, scoring='neg_mean_absolute_error').mean()}')
+for c in X.columns:
+    if c not in  test_X.columns:
+        print(c)
+
+
+
+my_pipeline = Pipeline(steps=[
+        ('preprocessor', KNNImputer(n_neighbors= 1)),
+        #('preprocessor', SimpleImputer()),
+        #('scaler', StandardScaler()),
+        ('model', XGBRegressor(n_estimators = 200, learning_rate =0.08337777777777779 ))
+    ])
+
+my_pipeline.fit(X,y)
+
+
+# """Making Predictions"""
+# #test_preds = rf_model_on_full_data.predict(test_X)
+test_preds = my_pipeline.predict(test_X)
+test_X.insert(0,'Id',labels)
+#print(test_X.columns)
+
+# """Saving submission"""
+folder_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\housingpricescompetition\home-data-for-ml-course'
+file_name = 'submission.csv'
+full_path = os.path.join(folder_path, file_name)
+
+output = pd.DataFrame({'Id': test_X.Id,
+                       'SalePrice': test_preds})
+
+output.to_csv(full_path, index=False,)
+
+
+# """ Estimates"""
+print(f'Total run time {time.time()-starttime}')
+print(f'Expected accuracy = {-1* cross_val_score(my_pipeline,X,y, scoring='neg_mean_absolute_error').mean()}')
 # print(((5310-1361)/5310)*100, ' Percentile')
 

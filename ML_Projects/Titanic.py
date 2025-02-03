@@ -60,7 +60,7 @@ import time
 # zip_file_path = r"C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\titanic.zip"
 # unzip_file(zip_file_path)
 
-file_path = r'C:\Users\jorda\Documents\GitHub\JDMmessingaround\JDMmessingaround\datasets\Titanic\train.csv'
+file_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\Titanic\train.csv'
 X = pd.read_csv(file_path)
 
 label_encoder = LabelEncoder()
@@ -71,9 +71,9 @@ label_encoder = LabelEncoder()
 y = X.pop('Survived')
 #X.pop([''])
 y = y.astype('int')
-labels= X.pop('PassengerId')
+#labels= X.pop('PassengerId')
 #print(y)
-X = X.drop(columns=['Name','Ticket','Cabin'])
+X = X.drop(columns=['PassengerId','Name','Ticket','Cabin'])
 
 
 features = X.columns[1:]
@@ -101,28 +101,28 @@ my_pipeline = Pipeline(steps=[
     ])
 
 
-from sklearn.model_selection import GridSearchCV
+# from sklearn.model_selection import GridSearchCV
 
-n=20
-step_size = 50
-n_estimators = []
-for i in range(1,n+1):
-    n_estimators.append(int(i*step_size))
-    print(i)
-neighbors= list(range(1,11))
-rates = list(np.linspace(0.0001,.15,10))
+# n=20
+# step_size = 50
+# n_estimators = []
+# for i in range(1,n+1):
+#     n_estimators.append(int(i*step_size))
+#     print(i)
+# neighbors= list(range(1,11))
+# rates = list(np.linspace(0.0001,.15,10))
 
-#print(rates)
-print("Starting GridSearch")
-param_grid = {'preprocessor__n_neighbors' :  neighbors,
-     'model__n_estimators': n_estimators,
-     'model__learning_rate': rates  
-     }
+# #print(rates)
+# print("Starting GridSearch")
+# param_grid = {'preprocessor__n_neighbors' :  neighbors,
+#      'model__n_estimators': n_estimators,
+#      'model__learning_rate': rates  
+#      }
 
 
-grid_search = GridSearchCV( estimator=my_pipeline, param_grid = param_grid, cv = 5, scoring = 'accuracy', verbose = 1)
-grid_search.fit(X_train, y_train)
-print(grid_search.best_params_)
+# grid_search = GridSearchCV( estimator=my_pipeline, param_grid = param_grid, cv = 5, scoring = 'accuracy', verbose = 1)
+# grid_search.fit(X_train, y_train)
+# print(grid_search.best_params_)
 
 
 # plt.plot(n_estimators,scores,'s')
@@ -240,37 +240,35 @@ print(grid_search.best_params_)
 
 
 
-# # """Pipline Model"""
-# titanic_model = Pipeline([
-#     ('imputer', KNNImputer(n_neighbors=10)),
-#     ('scaler', StandardScaler()),
-#     ('classifier', XGBClassifier(n_estimators = 50, learning_rate = 0.016755555555555555))])
-# titanic_model.fit(X,y)
+# """Pipline Model"""
+titanic_model = Pipeline([
+    ('imputer', KNNImputer(n_neighbors=1)),
+    ('scaler', StandardScaler()),
+    ('classifier', XGBClassifier(n_estimators = 50, learning_rate = 0.016755555555555555))])
+titanic_model.fit(X,y)
 
-# """ Making and Saving Predictions"""
-# test = pd.read_csv(r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\Titanic\test.csv')
-# test = test.drop(columns=['Name'])
-# #passids = test.pop('PassengerID')
-# col = test.columns[1:]
-# #print(col)
-# for c in col:
-#     if test[c].dtype != 'int' and  test[c].dtype != 'float':
-#         test[c] = label_encoder.fit_transform(test[c])
+""" Making and Saving Predictions"""
+test = pd.read_csv(r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\Titanic\test.csv')
+X_test = test.drop(columns=['PassengerID','Name','Ticket','Cabin'])
+#passids = test.pop('PassengerID')
 
-# test_preds = titanic_model.predict(test)
-# scores = cross_val_score(titanic_model, X, y, cv=5, scoring='accuracy')
-# print(f'Expected accuracy is {scores.mean()}')
+X_test = pd.get_dummies(X_test,columns=cat_features)
 
 
-# folder_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\Titanic'
-# file_name = 'submission.csv'
-# full_path = os.path.join(folder_path, file_name)
+test_preds = titanic_model.predict(X_test)
+scores = cross_val_score(titanic_model, X, y, cv=5, scoring='accuracy')
+print(f'Expected accuracy is {scores.mean()}')
 
-# output = pd.DataFrame({'PassengerId': test.PassengerId,
-#                        'Survived': test_preds})
 
-# output.to_csv(full_path, index=False,)
-# print(output.describe())
+folder_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\datasets\Titanic'
+file_name = 'submission.csv'
+full_path = os.path.join(folder_path, file_name)
+
+output = pd.DataFrame({'PassengerId': test.PassengerId,
+                       'Survived': test_preds})
+
+output.to_csv(full_path, index=False,)
+print(output.describe())
 
 #Most recent percentile
 print(f'Most recent percentile is {(1- (2697/12992))*100 }')

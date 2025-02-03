@@ -28,8 +28,8 @@ y = X.pop('SalePrice')
 labels = X.pop('Id')
 
 
-col = X.columns[1:]
-print(col)
+# col = X.columns[1:]
+# print(col)
 # for c in col:
 #     if X[c].dtype != 'int' and  X[c].dtype != 'float':
 #         X[c] = label_encoder.fit_transform(X[c])
@@ -40,18 +40,19 @@ print(col)
 #         numeric_featuers.append(c)
 # print(numeric_featuers)
 
-X = pd.get_dummies(X,columns=col)
-print(X.head())
+# cat_features = []
+# for c in col:
+#     if X[c].dtype != 'int' and  X[c].dtype != 'float':
+#         cat_features.append(X[c])
+    
+
+
+
 
 """ Feature Selection and Seperating Targets from Features"""
-#print(X.columns)
-#features = ['MSSubClass', 'LotArea','Condition1', 'OverallCond',  'YearBuilt', 'YearRemodAdd', 'TotalBsmtSF','HeatingQC', '1stFlrSF',
-            # '2ndFlrSF', 'BedroomAbvGr', 'FullBath', 'HalfBath','GarageType','Functional','WoodDeckSF','YrSold', 'SaleType', 'SaleCondition',
-            #  'PoolArea', 'PoolQC', 'Fence']
-#features = X.columns
 
 
-# num_of_features = 40
+# num_of_features = 20
 
 # correlation = []
 # for c in X.columns:
@@ -61,9 +62,46 @@ print(X.head())
 # features = []
 # for c in featureindices:
 #     features.append(X.columns[c])
-
+# X = X[features]
 # print(features)
 #print(X.columns)
+
+#print(X.columns)
+features = ['MSSubClass', 'LotArea','Condition1', 'OverallCond',  'YearBuilt', 'YearRemodAdd', 'TotalBsmtSF','HeatingQC', '1stFlrSF',
+            '2ndFlrSF', 'BedroomAbvGr', 'FullBath', 'HalfBath','GarageType','Functional','WoodDeckSF','YrSold', 'SaleType', 'SaleCondition',
+             'PoolArea', 'PoolQC', 'Fence']
+#features = X.columns
+#X = X[features]
+cat_features = []
+for c in features:
+    if X[c].dtype == 'object':
+        cat_features.append(c)
+
+num_features = []
+for c in X.columns:
+    if X[c].dtype != 'int':
+        num_features.append(c)
+
+allfeatures = cat_features + num_features
+
+test_X= pd.read_csv(r'datasets\housingpricescompetition\home-data-for-ml-course\test.csv')
+labels = test_X.pop('Id')
+
+
+X = X[allfeatures]
+test_X = test_X[allfeatures]
+X = pd.get_dummies(X,columns=allfeatures)
+test_X = pd.get_dummies(test_X,columns=allfeatures)
+
+
+Same_features = []
+for c in X.columns:
+    if c in list(test_X.columns):
+        Same_features.append(c)
+X=X[Same_features]
+test_X = test_X[Same_features]
+
+print(test_X.head())
 
 """Splitting Data"""
 X_train, X_valid, y_train, y_valid = train_test_split(X, y,random_state=1)
@@ -71,23 +109,25 @@ X_train, X_valid, y_train, y_valid = train_test_split(X, y,random_state=1)
 
 """ Creating Pipeline"""
 from sklearn.impute import KNNImputer
+from sklearn.preprocessing import StandardScaler
 
 my_pipeline = Pipeline(steps=[
         ('preprocessor', KNNImputer()),
         #('preprocessor', SimpleImputer()),
-        #('scaler', StandardScaler()),
+        ('scaler', StandardScaler()),
         ('model', XGBRegressor())
     ])
 
 
 from sklearn.model_selection import GridSearchCV
 
-n=20
+a=8
+b=15
 step_size = 50
 n_estimators = []
-for i in range(1,n+1):
+for i in range(a,b):
     n_estimators.append(int(i*step_size))
-neighbors= list(range(1,11))
+neighbors= list(range(1,5))
 rates = list(np.linspace(0.0001,.15,10))
 
 
@@ -99,43 +139,31 @@ param_grid = {'preprocessor__n_neighbors' :  neighbors,
      'model__learning_rate': rates  
      }
 
-grid_search = GridSearchCV( estimator=my_pipeline, param_grid = param_grid, cv = 4, scoring = 'neg_mean_absolute_error', verbose = 1)
-grid_search.fit(X_train, y_train)
-print(grid_search.best_params_)
+#  hbjjmn
+
+"""{'model__learning_rate': 0.08337777777777779, 'model__n_estimators': 200, 'preprocessor__n_neighbors': 1}"""
 
 
 
 
+# """ Defining Pipeline model"""
 
-
-# # """ Defining Pipeline model"""
-# my_pipeline = Pipeline(steps=[
-#         ('preprocessor', KNNImputer(n_neighbors= 4)),
-#         #('preprocessor', SimpleImputer()),
-#         ('scaler', StandardScaler()),
-#         ('model', XGBRegressor(learning_rate =  0.08337777777777779, n_estimators= 350))
-#     ])
-# my_pipeline.fit(X,y)
-
-
-# """ Processing Test Data"""
-# test_X= pd.read_csv(r'datasets\housingpricescompetition\home-data-for-ml-course\test.csv')
-# labels = test_X.pop('Id')
-# #print(test_X.head())
-# col = test_X.columns[1:]
-# #print(col)
-
-
-# test_X = pd.get_dummies(test_X,columns=col)
+my_pipeline = Pipeline(steps=[
+        ('preprocessor', KNNImputer(n_neighbors= 1)),
+        #('preprocessor', SimpleImputer()),
+        #('scaler', StandardScaler()),
+        ('model', XGBRegressor(learning_rate =  0.05006666666666667, n_estimators= 550))
+    ])
+my_pipeline.fit(X,y)
 
 
 
 # # """Making Predictions"""
 # # #test_preds = rf_model_on_full_data.predict(test_X)
-# test_preds = my_pipeline.predict(test_X)
+test_preds = my_pipeline.predict(test_X)
 # test_X.insert(0,'Id',labels)
 # #print(test_X.columns)
 
 # # """ Estimates"""
 # print(f'Total run time {time.time()-starttime}')
-# print(f'Expected accuracy = {-1* cross_val_score(my_pipeline,X,y, scoring='neg_mean_absolute_error').mean()}')
+print(f'Expected accuracy = {-1* cross_val_score(my_pipeline,X,y, scoring='neg_mean_absolute_error').mean()}')
