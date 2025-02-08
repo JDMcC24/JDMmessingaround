@@ -236,6 +236,22 @@ def mintohours(t):
 def outlierearnings(a):
     t = sum(a)
     avr = sum(a)/len(a)
-    print("The total time worked is "+ str(t//60) + " hours, "+ str( t%60) + " minutes,")
+    print("The total time worked is "+ str(t//60) + " hours, "+ str( t%60) + " minutes " + f'for {len(a)} many tasks()),')
     print( str(t * 5/6 ) + " dollars made in this time.")
     print("The average time spent per task is " + str(avr)+ " minutes.")
+
+
+    def find_lcm(a, b):
+    # Calculate the Greatest Common Divisor (GCD) using math.gcd()
+        gcd = math.gcd(a, b)
+    
+    # Calculate the Least Common Multiple (LCM)
+        lcm = abs(a * b) // gcd
+    
+        return lcm
+def sec_to_time(sec):
+    hours = sec // 3600
+    remaining = sec % 3600
+    minutes = remaining // 60
+    seconds = remaining %60
+    return f' Total time is {hours} hours, {minutes} minutes, and {seconds}, seconds.'

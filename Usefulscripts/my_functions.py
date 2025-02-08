@@ -239,3 +239,11 @@ def outlierearnings(a):
     print("The total time worked is "+ str(t//60) + " hours, "+ str( t%60) + " minutes,")
     print( str(t * 5/6 ) + " dollars made in this time.")
     print("The average time spent per task is " + str(avr)+ " minutes.")
+
+
+def sec_to_time(sec):
+    hours = sec // 3600
+    remaining = sec % 3600
+    minutes = remaining // 60
+    seconds = remaining %60
+    return f' Total time is {hours} hours, {minutes} minutes, and {seconds}, seconds.'
