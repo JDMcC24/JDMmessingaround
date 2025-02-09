@@ -23,12 +23,18 @@ import joblib
 
 
 # """ To Do:
+#     - Add am 'Age' feature for each fighter
 #     - Re-create functions from Ufcdataclearnup so that it doesn't have to run every time
 #     - Get Data for total (T)KO's and submissions"""
 
 start = time.time()
 
-det_data = pd.read_csv(r'UfcProject\CleanFighterData.cvs')
+
+### Entry the date of the Fight, defult is Today
+Date = datetime.now()
+
+
+det_data = pd.read_csv(r'UfcFightPredictor\CleanFighterData.cvs')
 
 
 """ Useful Functions"""
@@ -83,20 +89,20 @@ def matchup_stats(redfighter,bluefighter, Date):
 
 def get_prediction(RedFighter, Bluefighter, value):
     if value == 1:
-        return BlueFighter+ ' to win '
+        return BlueFighter+ ' to win'
     if value == 3:
-        return RedFighter+ ' to win '
+        return RedFighter+ ' to win'
     if value == 0:
-        return 'a draw '
+        return 'a draw'
     if value == 2:
-        return 'a no contest (lol) '
+        return 'a no contest (lol)'
 
 
 
 
 """ Loading Models"""
-nameless_model_path =r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject\SavedModels\nameless_model.joblib'
-nameless_pipeline_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject\SavedModels\nameless_pipeline.joblib'
+nameless_model_path =r'UfcFightPredictor\SavedModels\nameless_model.joblib'
+nameless_pipeline_path = r'UfcFightPredictor\SavedModels\nameless_pipeline.joblib'
 nameless_model = joblib.load(nameless_model_path)
 nameless_pipeline =joblib.load(nameless_pipeline_path)
 
@@ -108,28 +114,25 @@ def timestamp_to_float(timestamp):
     timestamp_float = timestamp.timestamp()
     return timestamp_float
 
+Date = timestamp_to_float(Date)
+
 
 
 """ Getting prediction Features for fight"""
 
-Allfeatures = ['BlueStance_Switch', 'RedDraws', 'RedLosses', 'RedWeight', 'RedTD Acc.', 'BlueStance_Southpaw', 'BlueStr. Acc.', 'BlueHeight', 'RedStr. Def.', 'BlueWeight', 'BlueReach', 'RedNoContests', 'BlueTD Def.', 'RedStance_Switch', 'RedStr. Acc.', 'BlueSApM', 'BlueWins', 'RedSLpM', 'BlueStance_Orthodox', 'RedHeight', 'BlueStr. Def.', 'RedReach', 'BlueStance_Sideways', 'BlueSLpM', 'BlueTD Acc.', 'BlueTD Avg.', 'RedSApM', 'RedSub. Avg.', 'RedWins', 'BlueNoContests', 'RedStance_Orthodox', 'RedTD Def.', 'RedTD Avg.', 'RedStance_Open Stance', 'BlueStance_Open Stance', 'RedStance_Southpaw', 'BlueSub. Avg.', 'BlueLosses', 'BlueDraws', 'BlueDOB', 'Date', 'RedDOB']
-column_order = ['Date', 'RedHeight', 'RedWeight', 'RedReach', 'RedDOB', 'RedSLpM',
-       'RedStr. Acc.', 'RedSApM', 'RedStr. Def.', 'RedTD Avg.', 'RedTD Acc.',
-       'RedTD Def.', 'RedSub. Avg.', 'RedWins', 'RedLosses', 'RedDraws',
-       'RedNoContests', 'BlueHeight', 'BlueWeight', 'BlueReach', 'BlueDOB',
-       'BlueSLpM', 'BlueStr. Acc.', 'BlueSApM', 'BlueStr. Def.', 'BlueTD Avg.',
-       'BlueTD Acc.', 'BlueTD Def.', 'BlueSub. Avg.', 'BlueWins', 'BlueLosses',
-       'BlueDraws', 'BlueNoContests', 'RedStance_Open Stance',
-       'RedStance_Orthodox', 'RedStance_Southpaw', 'RedStance_Switch',
-       'BlueStance_Open Stance', 'BlueStance_Orthodox', 'BlueStance_Sideways',
-       'BlueStance_Southpaw', 'BlueStance_Switch']
-
+Allfeatures = ['Date', 'RedHeight', 'RedWeight', 'RedReach', 'RedDOB', 'RedSLpM', 'RedStr. Acc.', 'RedSApM', 'RedStr. Def.', 'RedTD Avg.', 'RedTD Acc.', 'RedTD Def.', 'RedSub. Avg.', 'RedWins', 'RedLosses', 'RedDraws', 'RedNoContests', 'BlueHeight', 'BlueWeight', 'BlueReach', 'BlueDOB', 'BlueSLpM', 'BlueStr. Acc.', 'BlueSApM', 'BlueStr. Def.', 'BlueTD Avg.', 'BlueTD Acc.', 'BlueTD Def.', 'BlueSub. Avg.', 'BlueWins', 'BlueLosses', 'BlueDraws', 'BlueNoContests', 'RedAge', 'BlueAge', 'RedStance_Open Stance', 'RedStance_Orthodox', 'RedStance_Southpaw', 'RedStance_Switch', 'BlueStance_Open Stance', 'BlueStance_Orthodox', 'BlueStance_Sideways', 'BlueStance_Southpaw', 'BlueStance_Switch']
+column_order = Allfeatures
 def get_mathup_features(RedFighter, BlueFighter, Date):
     matchup = matchup_stats(RedFighter, BlueFighter, Date)
     matchup = matchup.drop(columns=['RedFighter', 'BlueFighter'])
     dummies = pd.get_dummies(matchup[['RedStance', 'BlueStance']])
     matchup = pd.concat([matchup,dummies], axis = 1)
     matchup = matchup.drop(['RedStance', 'BlueStance'], axis = 1)
+    matchup['RedDOB'] = matchup['RedDOB'].astype(float)
+    matchup['Date'] = matchup['Date'].astype(float)
+    matchup['BlueDOB'] = matchup['BlueDOB'].astype(float)
+    matchup['RedAge'] = matchup['Date'] - matchup['RedDOB']
+    matchup['BlueAge'] = matchup['Date'] - matchup['BlueDOB']
     presentfeatures=matchup.columns.to_list()
     for feature in Allfeatures:
         if feature not in presentfeatures:
@@ -137,66 +140,77 @@ def get_mathup_features(RedFighter, BlueFighter, Date):
     matchup = matchup[column_order]
     return matchup
 
-RedFighter = 'Zhang Weili'
-BlueFighter = 'Tatiana Suarez'
-Date = datetime.now()+timedelta(days=1)
-Date = timestamp_to_float(Date)
-#print(get_mathup_features(RedFighter, BlueFighter, Date))
+# RedFighter = 'Zhang Weili'
+# BlueFighter = 'Tatiana Suarez'
+
+
+# print(get_mathup_features(RedFighter, BlueFighter, Date))
 
 
 """First Fight to Predict"""
-RedFighter = 'Zhang Weili'
-BlueFighter = 'Tatiana Suarez'
+RedFighter = 'Jared Cannonier'
+BlueFighter = 'Gregory Rodrigues'
 X1 = get_mathup_features(RedFighter,BlueFighter,Date)
 
 model_prediction = nameless_model.predict(X1)
 pipeline_prediction = nameless_pipeline.predict(X1)
-print(f'For the first fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)} and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}' )
+print(f'For the first fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)}.', f' and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}.','', sep = '\n' )
 
 """Second Fight to Predict"""
 
-RedFighter = 'Dricus Du Plessis'
-BlueFighter = 'Sean Strickland'
+RedFighter = 'Calvin Kattar'
+BlueFighter = 'Youssef Zalal'
 X2 = get_mathup_features(RedFighter,BlueFighter,Date)
 
 model_prediction = nameless_model.predict(X2)
 pipeline_prediction = nameless_pipeline.predict(X2)
-print(f'For the second fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)} and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}' )
+print(f'For the second fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)}.', f' and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}.','', sep = '\n' )
 
 
 """Third Fight to Predict"""
 
-RedFighter = 'Tom Nolan'
-BlueFighter = 'Viacheslav Borshchev'
+RedFighter = 'Edmen Shahbazyan'
+BlueFighter = 'Dylan Budka'
 X3 = get_mathup_features(RedFighter,BlueFighter,Date)
 
 model_prediction = nameless_model.predict(X3)
 pipeline_prediction = nameless_pipeline.predict(X3)
-print(f'For the third fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)} and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}' )
+print(f'For the third fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)}.', f' and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}.','', sep = '\n' )
 
 
 
 """Fourth Fight to Predict"""
 
-RedFighter = 'Jimmy Crute'
-BlueFighter = 'Rodolfo Bellato'
+RedFighter = 'Ismael Bonfim'
+BlueFighter = 'Nazim Sadykhov'
 X4 = get_mathup_features(RedFighter,BlueFighter,Date)
 
 model_prediction = nameless_model.predict(X4)
 pipeline_prediction = nameless_pipeline.predict(X4)
-print(f'For the fourth fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)} and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}' )
+print(f'For the fourth fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)}.', f' and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}.','', sep = '\n' )
 
 """Fifth Fight to Predict"""
 
-RedFighter = 'Jake Matthews'
-BlueFighter = 'Francisco Prado'
+RedFighter = 'Rodolfo Vieira'
+BlueFighter = 'Andre Petroski'
 X5 = get_mathup_features(RedFighter,BlueFighter,Date)
 
 model_prediction = nameless_model.predict(X5)
 pipeline_prediction = nameless_pipeline.predict(X5)
-print(f'For the fifth fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)} and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}' )
+print(f'For the fifth fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)}.', f' and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}.','', sep = '\n' )
+
+
+
+""" Hypothetical"""
+# RedFighter = 'Umar Nurmagomedov'
+# BlueFighter = 'Merab Dvalishvili'
+# X5 = get_mathup_features(RedFighter,BlueFighter,Date)
+
+# model_prediction = nameless_model.predict(X5)
+# pipeline_prediction = nameless_pipeline.predict(X5)
+# print(f'For the hypothetical fight, the Model predicts {get_prediction(RedFighter, BlueFighter,model_prediction)}.', f' and the Pipeline predicts {get_prediction(RedFighter, BlueFighter,pipeline_prediction)}.','', sep = '\n' )
 
 
 print(sec_to_time(time.time()- start) )
 print('Done')
-#print(X.columns)
+# #print(X.columns)

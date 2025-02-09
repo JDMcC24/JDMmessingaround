@@ -17,14 +17,24 @@ from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GridSearchCV
-from Ufcdataclearnup import *
+#from Ufcdataclearnup import *
 import joblib
 
 
 
-#starttime = time.time()
+starttime = time.time()
 
-data = pd.read_csv(r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject\CleanData.cvs')
+data = pd.read_csv(r'UfcFightPredictor\CleanData.cvs')
+
+
+def sec_to_time(sec):
+    hours = sec // 3600
+    remaining = sec % 3600
+    minutes = remaining // 60
+    seconds = remaining %60
+    return f' Total time is {hours} hours, {minutes} minutes, and {seconds}, seconds.'
+
+
 
 y = data.pop('Result')
 labelencoder = LabelEncoder()
@@ -51,7 +61,7 @@ print(f'Expected accuracy for simple model is {cv_score.mean()}')
 # ('model', XGBClassifier() )
 # ])
 
-# n=10
+# n=20
 # step_size = 50
 # n_estimators = []
 # for i in range(1,n+1):
@@ -59,7 +69,7 @@ print(f'Expected accuracy for simple model is {cv_score.mean()}')
 #     #print(i)
 # #neighbors= list(range(1,5))
 # #neighbors = [1]
-# rates = list(np.linspace(0.0001,.25,10))
+# rates = list(np.linspace(0.0001,.20,10))
 
 # #print(rates)
 # print("Starting GridSearch")
@@ -73,14 +83,15 @@ print(f'Expected accuracy for simple model is {cv_score.mean()}')
 # grid_search = GridSearchCV( estimator=my_pipeline, param_grid = param_grid, cv = 3, scoring = 'accuracy', verbose = 1)
 # grid_search.fit(X_train, y_train)
 # print(grid_search.best_params_)
-"""" Grid Search yeilded most accurate model to be the one with following parameters:
-    {'model__learning_rate': 0.08340000000000002, 'model__n_estimators': 50}"""
+"""" Grid Search best results:
+{'model__learning_rate': 0.02231111111111111, 'model__n_estimators': 200}
+Expected accuracy for pipeline model is 0.7324299909665763"""
 
 nameless_pipeline = Pipeline(steps =[
 #('preprocessor', KNNImputer(n_neighbors=1)),
 ('preprocessor', SimpleImputer()),
 ('scaler', StandardScaler()),
-('model', XGBClassifier(learning_rate =0.08340000000000002, n_estimators = 50) )
+('model', XGBClassifier(learning_rate =0.02231111111111111, n_estimators = 200) )
 ])
 
 cv_score = cross_val_score(nameless_pipeline,X_train,y_train,scoring='accuracy', cv = 5)
@@ -92,8 +103,9 @@ nameless_fight_model.fit(X_train,y_train)
 
 
 """ Saving for future use"""
-joblib.dump(nameless_pipeline, r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject\SavedModels\nameless_pipeline.joblib')
-joblib.dump(nameless_fight_model, r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject\SavedModels\nameless_model.joblib')
+joblib.dump(nameless_pipeline, r'UfcFightPredictor\SavedModels\nameless_pipeline.joblib')
+joblib.dump(nameless_fight_model, r'UfcFightPredictor\SavedModels\nameless_model.joblib')
 print('Models have been saved.')
 
-print(f'Total run time is {time.time()- start} seconds')
+print(f'To Create Models: {sec_to_time(time.time() - starttime)}')
+# print(X.columns.to_list())

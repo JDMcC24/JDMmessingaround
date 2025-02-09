@@ -6,10 +6,10 @@ from datetime import datetime
 start = time.time()
 
 
-rbr_file_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject\current_roundbyround.csv'
+rbr_file_path = r'UfcFightPredictor\current_roundbyround.csv'
 rbrdata = pd.read_csv(rbr_file_path)
 
-detailedstats_path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject\ufc_fighters_detailed_stats.csv'
+detailedstats_path = r'UfcFightPredictor\ufc_fighters_detailed_stats.csv'
 det_data = pd.read_csv(detailedstats_path)
 """Fixing missing numbers"""
 det_data.replace('--', np.nan, inplace=True)
@@ -136,7 +136,7 @@ for stat in perstats:
        'Str. Acc.', 'SApM', 'Str. Def.', 'TD Avg.', 'TD Acc.', 'TD Def.',
        'Sub. Avg.', 'Wins', 'Losses', 'Draws', 'NoContests']"""
 
-det_data.to_csv( r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject\CleanFighterData.cvs', index=False)
+det_data.to_csv( r'UfcFightPredictor\CleanFighterData.cvs', index=False)
 
 
 
@@ -168,6 +168,7 @@ def matchup_stats(redfighter,bluefighter, Date):
     for col in stats:
         redcolumns.append('Red'+col)
         bluecolumns.append('Blue'+col)
+    
     columns = ['RedFighter', 'BlueFighter', 'Date'] + redcolumns + bluecolumns
     #[redfighter,bluefighter, Date]+ redstats + bluestats
     stats = np.array([[redfighter,bluefighter, Date]+ redstats + bluestats])
@@ -211,10 +212,18 @@ match_data['Result'] = winslist
 #match_data = match_data.drop(match_data.columns[0],axis = 0 )
 # match_data.pop('id')
 # print(match_data.head())
+# match_data['Date'] = match_data['Date'].apply(timestamp_to_float)
+match_data.Date = match_data.Date.astype(float)
+match_data.RedDOB = match_data.RedDOB.astype(float)
+match_data.BlueDOB = match_data.BlueDOB.astype(float)
+match_data['RedAge'] = match_data['Date'] - match_data['RedDOB']
+match_data['BlueAge'] = match_data['Date'] - match_data['BlueDOB']
+
+
 
 path = r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject'
 filename = 'CleanData.cvs'
-match_data.to_csv( r'C:\Users\jorda\OneDrive\Documents\GitHub\JDMmessingaround\UfcProject\CleanData.cvs', index=False)
+match_data.to_csv( r'UfcFightPredictor\CleanData.cvs', index=False)
 
 print(f'Clean Data has been saved as '+ filename)
 
